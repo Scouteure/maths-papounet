@@ -1,0 +1,1952 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2546a8">
+<title>Les maths de Papounet</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+    svg: { fontCache: 'global' },
+    options: { enableMenu: false }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" async></script>
+<style>
+/* Layout: one mobile column, like a single sheet of squared paper; teacher's red ink marks the solutions. */
+:root {
+  --paper: #f7f8fb;
+  --grid: rgba(60, 90, 170, 0.07);
+  --sheet: #ffffff;
+  --ink: #1b2440;
+  --ink-soft: #55607d;
+  --line: #dde2ee;
+  --blue: #2546a8;
+  --blue-soft: #e6ebfa;
+  --red: #c0352b;
+  --red-soft: #fbeceb;
+  --green: #1f7a5a;
+  --green-soft: #e3f3ec;
+  --sq-dark: #5b6688;
+  --sq-light: #eef1f8;
+  --t-probleme: #2546a8;
+  --t-paradoxe: #8a3fb0;
+  --t-fait: #1f7a5a;
+  --t-preuve: #b0651a;
+  --font-text: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-ui: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #10142a; --grid: rgba(140, 170, 255, 0.06); --sheet: #171c36;
+    --ink: #e7eaf5; --ink-soft: #a6afcb; --line: #2a3156;
+    --blue: #8fa8ff; --blue-soft: #232c55; --red: #ff8a7d; --red-soft: #3a2030;
+    --green: #6fd3a8; --green-soft: #173a32; --sq-dark: #7c88b0; --sq-light: #262d52;
+    --t-probleme: #8fa8ff; --t-paradoxe: #d29cf0; --t-fait: #6fd3a8; --t-preuve: #f2b36b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #10142a; --grid: rgba(140, 170, 255, 0.06); --sheet: #171c36;
+  --ink: #e7eaf5; --ink-soft: #a6afcb; --line: #2a3156;
+  --blue: #8fa8ff; --blue-soft: #232c55; --red: #ff8a7d; --red-soft: #3a2030;
+  --green: #6fd3a8; --green-soft: #173a32; --sq-dark: #7c88b0; --sq-light: #262d52;
+  --t-probleme: #8fa8ff; --t-paradoxe: #d29cf0; --t-fait: #6fd3a8; --t-preuve: #f2b36b;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { font-size: 17px; }
+body {
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: 1.12rem;
+  line-height: 1.65;
+}
+.wrap {
+  max-width: 640px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+header { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; padding-top: 8px; }
+.brandbox { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.brand { font-family: var(--font-ui); font-weight: 800; font-size: 1.6rem; line-height: 1.15; letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
+.brand span { color: var(--blue); }
+.tagline { font-family: var(--font-ui); color: var(--ink-soft); font-size: 0.9rem; margin: 0; }
+.size { display: flex; gap: 6px; flex-shrink: 0; }
+.size button {
+  font-family: var(--font-ui); font-weight: 800; color: var(--ink);
+  background: var(--sheet); border: 1px solid var(--line); border-radius: 10px;
+  width: 44px; height: 44px; cursor: pointer; font-size: 0.95rem;
+}
+.size button:last-child { font-size: 1.2rem; }
+
+.days { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.day {
+  font-family: var(--font-ui);
+  border: 1px solid var(--line);
+  background: var(--sheet);
+  color: var(--ink-soft);
+  border-radius: 12px;
+  padding: 8px 2px;
+  display: flex; flex-direction: column; align-items: center;
+  cursor: pointer; line-height: 1.2;
+}
+.day b { font-size: 1.15rem; color: var(--ink); font-variant-numeric: tabular-nums; }
+.day small { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.day .dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 4px; }
+.day[aria-current="true"] { background: var(--blue); border-color: var(--blue); color: var(--sheet); }
+.day[aria-current="true"] b { color: var(--sheet); }
+.day:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+.card {
+  background: var(--sheet);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 22px 18px 20px;
+  display: flex; flex-direction: column; gap: 14px;
+  box-shadow: 0 6px 24px rgba(20, 30, 70, 0.06);
+  min-width: 0;
+}
+.when { font-family: var(--font-ui); font-size: 0.8rem; color: var(--ink-soft); font-weight: 600; margin: 0; }
+.when .today { color: var(--red); }
+.tag {
+  align-self: flex-start;
+  font-family: var(--font-ui); font-weight: 700; font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 4px 10px; border-radius: 999px;
+  color: var(--c); border: 1.5px solid var(--c);
+}
+.card h2 { font-family: var(--font-ui); font-weight: 800; font-size: 1.45rem; line-height: 1.2; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+.meta { font-family: var(--font-ui); font-size: 0.82rem; color: var(--ink-soft); margin: 0; display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.meta .lvl { color: var(--c); letter-spacing: 0.1em; }
+.body, .solution { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.body p, .body ul, .body ol, .solution p, .solution ul, .solution ol { margin: 0; }
+.body ul, .body ol, .solution ul, .solution ol { padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+.question { background: var(--blue-soft); border-radius: 12px; padding: 12px 14px; font-style: italic; }
+
+details.hint { border: 1px dashed var(--line); border-radius: 12px; padding: 10px 14px; }
+details.hint summary { font-family: var(--font-ui); font-weight: 700; font-size: 0.95rem; cursor: pointer; color: var(--blue); }
+details.hint[open] summary { margin-bottom: 6px; }
+
+.reveal {
+  font-family: var(--font-ui); font-weight: 800; font-size: 1.05rem;
+  background: var(--red); color: var(--sheet);
+  border: 0; border-radius: 14px; padding: 15px 18px; width: 100%;
+  cursor: pointer;
+}
+.reveal:active { transform: translateY(1px); }
+.solution {
+  border-left: 3px solid var(--red);
+  background: var(--red-soft);
+  border-radius: 0 12px 12px 0;
+  padding: 14px 14px 14px 16px;
+}
+.solution-label { font-family: var(--font-ui); font-weight: 800; color: var(--red); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.step { font-family: var(--font-ui); font-weight: 800; color: var(--red); }
+.keep {
+  background: var(--sheet); border: 1.5px solid var(--green); border-radius: 12px;
+  padding: 10px 14px;
+}
+.keep b { font-family: var(--font-ui); color: var(--green); display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; }
+
+/* Figures */
+figure { margin: 0; display: flex; flex-direction: column; gap: 6px; align-items: center; }
+figure svg { width: 100%; max-width: 360px; height: auto; display: block; }
+figcaption { font-family: var(--font-ui); font-size: 0.82rem; color: var(--ink-soft); text-align: center; line-height: 1.45; max-width: 40ch; }
+.f-ink { fill: var(--ink); }
+.f-soft { fill: var(--ink-soft); }
+.f-blue { fill: var(--blue); }
+.f-blue-soft { fill: var(--blue-soft); }
+.f-red { fill: var(--red); }
+.f-sheet { fill: var(--sheet); }
+.f-none { fill: none; }
+.s-blue { stroke: var(--blue); }
+.s-red { stroke: var(--red); }
+.s-soft { stroke: var(--ink-soft); }
+.s-ink { stroke: var(--ink); }
+svg text { font-family: var(--font-ui); font-weight: 700; }
+
+.tablebox { overflow-x: auto; width: 100%; }
+table.simpson { border-collapse: collapse; width: 100%; font-family: var(--font-ui); font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+table.simpson th, table.simpson td { padding: 9px 5px; border-bottom: 1px solid var(--line); text-align: center; }
+table.simpson th:first-child, table.simpson td:first-child { text-align: left; }
+table.simpson thead th { color: var(--ink-soft); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; }
+table.simpson td small { display: block; color: var(--ink-soft); font-weight: 500; font-size: 0.75rem; }
+table.simpson .win { background: var(--green-soft); color: var(--green); font-weight: 800; }
+table.simpson tr.total td { border-top: 2px solid var(--ink); font-weight: 800; }
+
+.bars { width: 100%; display: flex; flex-direction: column; gap: 10px; font-family: var(--font-ui); font-size: 0.82rem; }
+.bar-row { display: flex; flex-direction: column; gap: 4px; }
+.bar { display: flex; height: 30px; border-radius: 8px; overflow: hidden; }
+.bar span { display: flex; align-items: center; justify-content: center; color: var(--sheet); font-weight: 700; font-size: 0.78rem; white-space: nowrap; overflow: hidden; }
+.bar .easy { background: var(--green); }
+.bar .hard { background: var(--red); }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; color: var(--ink-soft); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+
+.chain { width: 100%; display: flex; flex-direction: column; gap: 6px; font-family: var(--font-ui); font-variant-numeric: tabular-nums; }
+.chain div { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: var(--sq-light); border-radius: 10px; padding: 8px 12px; font-size: 0.95rem; }
+.chain div span { color: var(--ink-soft); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.chain div.end { background: var(--green-soft); color: var(--green); font-weight: 800; }
+.chain div.end span { color: var(--green); }
+
+.more { font-family: var(--font-ui); font-size: 0.82rem; color: var(--ink-soft); border-top: 1px solid var(--line); padding-top: 12px; margin: 0; }
+.more a { color: var(--blue); }
+
+.nav { display: flex; gap: 10px; }
+.nav button {
+  flex: 1; font-family: var(--font-ui); font-weight: 700; font-size: 0.95rem;
+  background: var(--sheet); color: var(--ink); border: 1px solid var(--line);
+  border-radius: 12px; padding: 13px; cursor: pointer;
+}
+.nav button:disabled { opacity: 0.4; cursor: default; }
+
+footer { font-family: var(--font-ui); font-size: 0.8rem; color: var(--ink-soft); text-align: center; }
+
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width: 100%; padding-block: 4px; margin: 0 !important; }
+mjx-container[display="true"] > svg { max-width: 100%; height: auto; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .card { animation: in 0.25s ease-out; }
+  @keyframes in { from { transform: translateY(6px); } to { transform: none; } }
+}
+
+.preview-note { font-family: var(--font-ui); font-size: 0.82rem; background: var(--blue-soft); color: var(--blue); border-radius: 12px; padding: 10px 14px; margin: 0; }
+.archive { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+.archive h2 { font-family: var(--font-ui); font-weight: 800; font-size: 1.1rem; margin: 0; }
+.archive h2 span { color: var(--ink-soft); font-weight: 600; font-size: 0.85rem; margin-left: 6px; }
+.archive ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.archive button {
+  width: 100%; display: flex; gap: 12px; align-items: center; text-align: left;
+  background: var(--sheet); border: 1px solid var(--line); border-left: 4px solid var(--c);
+  border-radius: 10px; padding: 10px 12px; cursor: pointer; color: var(--ink);
+  font-family: var(--font-ui); font-weight: 700; font-size: 0.92rem; line-height: 1.3;
+}
+.archive .a-n { color: var(--ink-soft); font-variant-numeric: tabular-nums; font-size: 0.8rem; min-width: 2.6em; }
+.archive .a-t { display: flex; flex-direction: column; min-width: 0; }
+.archive .a-t small { color: var(--c); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brandbox">
+      <h1 class="brand">Les maths de <span>Papounet</span></h1>
+      <p class="tagline">Une curiosité mathématique par jour</p>
+    </div>
+    <div class="size" role="group" aria-label="Taille du texte">
+      <button type="button" id="smaller" aria-label="Texte plus petit">A−</button>
+      <button type="button" id="bigger" aria-label="Texte plus grand">A+</button>
+    </div>
+  </header>
+
+  <p class="preview-note" id="preview-note" hidden>Aperçu : toutes les fiches du mois sont visibles. Sur le site de Papounet, une nouvelle fiche apparaît chaque jour.</p>
+
+  <nav class="days" id="days" aria-label="Choisir le jour"></nav>
+
+  <main id="cards">
+<article class="card" data-n="1" style="--c: var(--t-probleme)" hidden>
+      <span class="tag">Problème</span>
+      <h2>Une corde autour de la Terre</h2>
+      <p class="meta"><span>Géométrie · périmètre du cercle</span><span class="lvl">●○○○</span></p>
+      <div class="body">
+        <p>On entoure la Terre, le long de l'équateur, avec une corde bien tendue. Elle mesure environ 40&nbsp;000 km.</p>
+        <p>On rallonge cette corde de <strong>1 mètre seulement</strong>. Puis on la soulève pour qu'elle flotte à la même hauteur tout autour de la Terre.</p>
+        <figure>
+          <svg viewBox="0 0 320 230" role="img" aria-label="La Terre en bleu, et la corde rallongée en rouge pointillé, un peu plus loin tout autour">
+            <circle cx="150" cy="122" r="96" class="f-none s-red" stroke-width="2.5" stroke-dasharray="7 5"/>
+            <circle cx="150" cy="122" r="78" class="f-blue-soft s-blue" stroke-width="2.5"/>
+            <text x="150" y="110" text-anchor="middle" class="f-blue" font-size="15">Terre</text>
+            <line x1="150" y1="122" x2="228" y2="122" class="s-blue" stroke-width="2"/>
+            <circle cx="150" cy="122" r="3" class="f-blue"/>
+            <text x="189" y="140" text-anchor="middle" class="f-blue" font-size="14">R</text>
+            <line x1="229" y1="122" x2="245" y2="122" class="s-red" stroke-width="3"/>
+            <line x1="229" y1="114" x2="229" y2="130" class="s-red" stroke-width="2"/>
+            <line x1="246" y1="114" x2="246" y2="130" class="s-red" stroke-width="2"/>
+            <text x="252" y="114" class="f-red" font-size="14">hauteur</text>
+            <text x="252" y="132" class="f-red" font-size="14">h = ?</text>
+            <text x="150" y="16" text-anchor="middle" class="f-red" font-size="13">corde rallongée de 1 m</text>
+          </svg>
+          <figcaption>L'écart est exagéré sur le dessin.</figcaption>
+        </figure>
+        <p class="question">Un chat pourrait-il passer sous la corde ? Et si on fait la même chose autour d'une orange ?</p>
+        <details class="hint">
+          <summary>Un indice</summary>
+          <p>Écris la longueur de la corde avant et après, avec la formule du périmètre du cercle.</p>
+        </details>
+      </div>
+      <button class="reveal" type="button">Voir la solution</button>
+      <div class="solution" hidden>
+        <p class="solution-label">Solution</p>
+        <p><span class="step">1.</span> Avant, la corde fait le tour d'un cercle de rayon $R$ : sa longueur est $2\pi R$.</p>
+        <p><span class="step">2.</span> Après, elle fait le tour d'un cercle de rayon $R + h$, et elle mesure 1 m de plus :</p>
+        $$2\pi (R + h) = 2\pi R + 1$$
+        <p><span class="step">3.</span> On développe : $2\pi R + 2\pi h = 2\pi R + 1$. Les $2\pi R$ s'en vont des deux côtés :</p>
+        $$h = \frac{1}{2\pi} \approx 0{,}16 \text{ m}$$
+        <p><strong>La corde flotte à environ 16 cm du sol.</strong> Un chat passe dessous sans problème.</p>
+        <p><span class="step">4.</span> Le plus étonnant : le rayon $R$ a disparu du calcul. Autour d'une orange, d'un ballon ou de la Terre, la corde se soulève toujours de <strong>16 cm</strong>.</p>
+        <p class="keep"><b>À retenir</b>Rallonger un cercle de 1 m éloigne toujours la corde d'environ 16 cm, quelle que soit sa taille. Notre intuition compare 1 m à 40&nbsp;000 km, alors que la hauteur ne dépend que du mètre ajouté.</p>
+      </div>
+      <p class="more">Énigme attribuée à William Whiston (1702).</p>
+    </article>
+
+<article class="card" data-n="2" style="--c: var(--t-paradoxe)" hidden>
+      <span class="tag">Paradoxe</span>
+      <h2>Le meilleur traitement… qui perd au total</h2>
+      <p class="meta"><span>Statistiques · pourcentages</span><span class="lvl">●●○○</span></p>
+      <div class="body">
+        <p>En 1986, une étude médicale anglaise compare deux traitements des calculs rénaux, A et B. Chacun a été donné à 350 patients. Les médecins séparent les petits calculs et les gros calculs.</p>
+        <div class="tablebox">
+          <table class="simpson">
+            <thead><tr><th></th><th>Traitement A</th><th>Traitement B</th></tr></thead>
+            <tbody>
+              <tr><td>Petits calculs</td><td class="win">93 %<small>81 guéris sur 87</small></td><td>87 %<small>234 sur 270</small></td></tr>
+              <tr><td>Gros calculs</td><td class="win">73 %<small>192 guéris sur 263</small></td><td>69 %<small>55 sur 80</small></td></tr>
+              <tr class="total"><td>Total</td><td>78 %<small>273 sur 350</small></td><td class="win">83 %<small>289 sur 350</small></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>A guérit mieux les petits calculs. A guérit mieux les gros calculs. Et pourtant, <strong>au total, B fait mieux</strong>. Tous les calculs sont justes.</p>
+        <p class="question">Comment est-ce possible ? Et quel traitement faut-il choisir ?</p>
+      </div>
+      <button class="reveal" type="button">Voir l'explication</button>
+      <div class="solution" hidden>
+        <p class="solution-label">Explication</p>
+        <p><span class="step">1.</span> Regardons <strong>à qui</strong> on a donné chaque traitement :</p>
+        <figure>
+          <div class="bars" aria-label="Répartition des patients">
+            <div class="bar-row">
+              <span>Patients du traitement A (350)</span>
+              <div class="bar"><span class="easy" style="width: 25%">87</span><span class="hard" style="width: 75%">263 gros calculs</span></div>
+            </div>
+            <div class="bar-row">
+              <span>Patients du traitement B (350)</span>
+              <div class="bar"><span class="easy" style="width: 77%">270 petits calculs</span><span class="hard" style="width: 23%">80</span></div>
+            </div>
+            <div class="legend"><span><i style="background: var(--green)"></i>petits calculs (faciles)</span><span><i style="background: var(--red)"></i>gros calculs (difficiles)</span></div>
+          </div>
+        </figure>
+        <p><span class="step">2.</span> Les médecins ont surtout donné A aux cas <strong>difficiles</strong>, et B aux cas <strong>faciles</strong>.</p>
+        <p><span class="step">3.</span> Un gros calcul guérit moins souvent, quel que soit le traitement. Le total de A est donc tiré vers le bas par tous ses cas difficiles. Ce n'est pas la faute du traitement.</p>
+        <p><span class="step">4.</span> Il faut donc choisir <strong>A</strong> : pour chaque patient, petit ou gros calcul, il guérit mieux.</p>
+        <p class="keep"><b>À retenir</b>Avant de comparer deux pourcentages globaux, il faut vérifier que les deux groupes sont comparables. Une moyenne peut cacher une différence de composition.</p>
+      </div>
+      <p class="more">Données : Charig et al., <em>British Medical Journal</em> (1986). Paradoxe décrit par Edward Simpson (1951). <a href="https://fr.wikipedia.org/wiki/Paradoxe_de_Simpson" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+    </article>
+
+<article class="card" data-n="3" style="--c: var(--t-fait)" hidden>
+      <span class="tag">Fait peu connu</span>
+      <h2>Le nombre mystérieux 6174</h2>
+      <p class="meta"><span>Arithmétique</span><span class="lvl">●○○○</span></p>
+      <div class="body">
+        <p>Prends un nombre de 4 chiffres, pas tous identiques. Puis :</p>
+        <ol>
+          <li>range ses chiffres du plus grand au plus petit ;</li>
+          <li>range-les du plus petit au plus grand ;</li>
+          <li>soustrais le petit nombre du grand ;</li>
+          <li>recommence avec le résultat.</li>
+        </ol>
+        <p>Essayons avec <strong>2026</strong> :</p>
+        <figure>
+          <div class="chain">
+            <div><b>6220 − 0226 = 5994</b><span>étape 1</span></div>
+            <div><b>9954 − 4599 = 5355</b><span>étape 2</span></div>
+            <div><b>5553 − 3555 = 1998</b><span>étape 3</span></div>
+            <div><b>9981 − 1899 = 8082</b><span>étape 4</span></div>
+            <div><b>8820 − 0288 = 8532</b><span>étape 5</span></div>
+            <div><b>8532 − 2358 = 6174</b><span>étape 6</span></div>
+            <div class="end"><b>7641 − 1467 = 6174</b><span>bloqué !</span></div>
+          </div>
+          <figcaption>On garde les zéros : 0226 compte comme un nombre à 4 chiffres.</figcaption>
+        </figure>
+        <p>On tombe sur <strong>6174</strong>, qui redonne 6174 pour toujours. Et cela arrive avec <strong>n'importe quel</strong> nombre de départ, en 7 étapes au maximum.</p>
+        <p class="question">Essaie avec ton année de naissance. Pourquoi tombe-t-on toujours sur 6174 ?</p>
+      </div>
+      <button class="reveal" type="button">Voir pourquoi</button>
+      <div class="solution" hidden>
+        <p class="solution-label">Pourquoi ça marche</p>
+        <p><span class="step">1.</span> Appelons les chiffres rangés $a \ge b \ge c \ge d$. Le grand nombre est $\overline{abcd}$, le petit est $\overline{dcba}$. Leur différence vaut :</p>
+        $$\overline{abcd} - \overline{dcba} = 999\,(a - d) + 90\,(b - c)$$
+        <p><span class="step">2.</span> Le résultat ne dépend donc que de deux écarts : $a - d$ (de 1 à 9) et $b - c$ (de 0 à 9). Il n'y a qu'une cinquantaine de résultats possibles après la première étape, pas 9 000.</p>
+        <p><span class="step">3.</span> On peut tester ces quelques dizaines de cas à la main en un après-midi : ils mènent tous à 6174. C'est une preuve par vérification, sans astuce cachée.</p>
+        <p><span class="step">4.</span> Bonus : on voit aussi que chaque résultat est un <strong>multiple de 9</strong>, puisque 999 et 90 le sont. Vérifie : 5994, 5355, 1998… et 6174 = 9 × 686.</p>
+        <p class="keep"><b>À retenir</b>Avec 3 chiffres, le même jeu mène toujours à <strong>495</strong>. Pour 4 chiffres, c'est 6174, appelé constante de Kaprekar.</p>
+      </div>
+      <p class="more">Découvert par le mathématicien indien D. R. Kaprekar (1949), un instituteur passionné de calcul. <a href="https://fr.wikipedia.org/wiki/Algorithme_de_Kaprekar" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+    </article>
+
+<article class="card" data-n="4" style="--c: var(--t-preuve)" hidden>
+      <span class="tag">Belle démonstration</span>
+      <h2>L'échiquier aux deux coins coupés</h2>
+      <p class="meta"><span>Logique · coloriage</span><span class="lvl">●○○○</span></p>
+      <div class="body">
+        <p>On retire deux coins <strong>opposés</strong> d'un échiquier. Il reste 64 − 2 = 62 cases.</p>
+        <p>On a 31 dominos. Chacun recouvre exactement deux cases voisines (côte à côte ou l'une au-dessus de l'autre).</p>
+        <figure>
+          <svg viewBox="0 0 248 248" role="img" aria-label="Échiquier de 8 sur 8 dont les coins en haut à gauche et en bas à droite sont retirés, avec un domino posé sur une case foncée et une case claire">
+            <g id="board"></g>
+          </svg>
+          <figcaption>Les deux coins barrés sont retirés. En rouge : un domino posé.</figcaption>
+        </figure>
+        <p class="question">Peut-on recouvrir les 62 cases avec les 31 dominos, sans chevauchement ?</p>
+        <details class="hint">
+          <summary>Un indice</summary>
+          <p>Regarde la couleur des deux cases sous un domino. Et la couleur des deux coins retirés.</p>
+        </details>
+      </div>
+      <button class="reveal" type="button">Voir la démonstration</button>
+      <div class="solution" hidden>
+        <p class="solution-label">Démonstration</p>
+        <p><strong>C'est impossible</strong>, et on peut le prouver sans essayer une seule fois.</p>
+        <p><span class="step">1.</span> Un domino recouvre toujours <strong>une case foncée et une case claire</strong>, car deux cases voisines n'ont jamais la même couleur.</p>
+        <p><span class="step">2.</span> Donc 31 dominos recouvrent toujours 31 cases foncées et 31 cases claires.</p>
+        <p><span class="step">3.</span> Or les deux coins opposés sont de la <strong>même couleur</strong> (foncés sur le dessin). Il reste 30 cases foncées et 32 cases claires.</p>
+        <p><span class="step">4.</span> 30 ≠ 31 : le pavage est impossible. ∎</p>
+        <p class="keep"><b>À retenir</b>Colorier les cases transforme un problème où il faudrait essayer des millions de placements en un simple comptage. Bonus : si on retire une case claire et une case foncée, n'importe où, le pavage est toujours possible (théorème de Gomory).</p>
+      </div>
+      <p class="more">Problème posé par le philosophe Max Black (1946), rendu célèbre par Martin Gardner. <a href="https://en.wikipedia.org/wiki/Mutilated_chessboard_problem" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+    </article>
+
+<article class="card" data-n="9" style="--c: var(--t-probleme)" hidden>
+      <span class="tag">Problème · défi</span>
+      <h2>Les 100 prisonniers et les 100 boîtes</h2>
+      <p class="meta"><span>Probabilités · logique</span><span class="lvl">●●●○</span></p>
+      <div class="body">
+        <p>Cent prisonniers sont numérotés de 1 à 100. Dans une pièce, il y a 100 boîtes numérotées de 1 à 100. Dans chaque boîte, on a caché au hasard le numéro d'un prisonnier.</p>
+        <p>Chaque prisonnier entre seul et peut ouvrir <strong>50 boîtes</strong>. Puis il ressort, sans rien toucher ni rien dire aux autres.</p>
+        <p>Si <strong>tous</strong> trouvent leur propre numéro, ils sont libérés. Sinon, personne ne l'est. Ils peuvent se mettre d'accord sur une méthode avant de commencer.</p>
+        <p>Au hasard, chacun a 1 chance sur 2. Pour les 100, cela fait une chance sur un million de milliards de milliards de milliards : autant dire zéro.</p>
+        <p class="question">Il existe une méthode qui leur donne presque 1 chance sur 3. Laquelle ?</p>
+        <details class="hint">
+          <summary>Un indice</summary>
+          <p>Le numéro trouvé dans une boîte peut servir à choisir la boîte suivante.</p>
+        </details>
+      </div>
+      <button class="reveal" type="button">Voir la solution</button>
+      <div class="solution" hidden>
+        <p class="solution-label">Solution</p>
+        <p><span class="step">1. La méthode.</span> Chaque prisonnier ouvre d'abord la boîte qui porte <strong>son propre numéro</strong>. Il y trouve un numéro, et il ouvre la boîte qui porte ce numéro. Et ainsi de suite.</p>
+        <p><span class="step">2. Un exemple avec 8 boîtes.</span> On dessine une flèche de chaque boîte vers la boîte dont le numéro est caché dedans. Les flèches forment toujours des <strong>boucles</strong> :</p>
+        <figure>
+          <svg viewBox="0 0 320 160" role="img" aria-label="Trois boucles de flèches : 1 vers 5 vers 3 vers 1, 2 vers 8 vers 2, 4 vers 7 vers 6 vers 4">
+            <defs>
+              <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" style="fill: var(--red)"/>
+              </marker>
+            </defs>
+            <g class="s-red" stroke-width="2" fill="none" marker-end="url(#arr)">
+              <line x1="67.9" y1="53.9" x2="91.1" y2="94.4"/>
+              <line x1="84" y1="110" x2="38" y2="110"/>
+              <line x1="27.9" y1="96.1" x2="51.1" y2="55.6"/>
+              <path d="M172 52 Q190 75 172 98"/>
+              <path d="M148 98 Q130 75 148 52"/>
+              <line x1="267.9" y1="53.9" x2="291.1" y2="94.4"/>
+              <line x1="284" y1="110" x2="238" y2="110"/>
+              <line x1="227.9" y1="96.1" x2="251.1" y2="55.6"/>
+            </g>
+            <g class="f-blue-soft s-blue" stroke-width="2">
+              <rect x="46" y="26" width="28" height="28" rx="5"/>
+              <rect x="86" y="96" width="28" height="28" rx="5"/>
+              <rect x="6" y="96" width="28" height="28" rx="5"/>
+              <rect x="146" y="26" width="28" height="28" rx="5"/>
+              <rect x="146" y="96" width="28" height="28" rx="5"/>
+              <rect x="246" y="26" width="28" height="28" rx="5"/>
+              <rect x="286" y="96" width="28" height="28" rx="5"/>
+              <rect x="206" y="96" width="28" height="28" rx="5"/>
+            </g>
+            <g class="f-blue" font-size="15" text-anchor="middle">
+              <text x="60" y="45">1</text><text x="100" y="115">5</text><text x="20" y="115">3</text>
+              <text x="160" y="45">2</text><text x="160" y="115">8</text>
+              <text x="260" y="45">4</text><text x="300" y="115">7</text><text x="220" y="115">6</text>
+            </g>
+            <g class="f-soft" font-size="12" text-anchor="middle">
+              <text x="60" y="150">boucle de 3</text><text x="160" y="150">boucle de 2</text><text x="260" y="150">boucle de 3</text>
+            </g>
+          </svg>
+          <figcaption>La boîte 1 contient le numéro 5, la boîte 5 contient le 3, la boîte 3 contient le 1.</figcaption>
+        </figure>
+        <p>Le prisonnier n°1 ouvre la boîte 1 (il y trouve 5), puis la 5 (il y trouve 3), puis la 3 : il y trouve <strong>1</strong>. Il a réussi en 3 boîtes.</p>
+        <p><span class="step">3. Pourquoi ça marche.</span> En suivant les flèches, chaque prisonnier fait le tour de <strong>sa</strong> boucle, et elle se termine forcément sur la boîte qui contient son numéro. Il réussit si sa boucle a 50 boîtes ou moins.</p>
+        <p><span class="step">4. Le calcul.</span> Tout le monde réussit s'il n'y a <strong>aucune boucle de plus de 50 boîtes</strong>. Les prisonniers ne réussissent plus chacun de leur côté : ils gagnent ou perdent tous ensemble. On montre que la probabilité d'avoir une boucle trop longue vaut</p>
+        $$\frac{1}{51} + \frac{1}{52} + \cdots + \frac{1}{100} \approx 0{,}69$$
+        <p>Ils sont donc libérés avec une probabilité d'environ <strong>31 %</strong>.</p>
+        <p class="keep"><b>À retenir</b>Une bonne méthode ne rend pas chaque prisonnier plus chanceux : chacun garde 1 chance sur 2. Elle fait en sorte qu'ils réussissent ou échouent tous ensemble. On a prouvé qu'aucune méthode ne fait mieux.</p>
+      </div>
+      <p class="more">Problème posé par Anna Gál et Peter Bro Miltersen (2003). <a href="https://fr.wikipedia.org/wiki/Probl%C3%A8me_des_100_prisonniers" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+    </article>
+
+<article class="card" data-n="5" style="--c: var(--t-paradoxe)" hidden>
+  <span class="tag">Paradoxe</span>
+  <h2>23 personnes et un anniversaire en commun</h2>
+  <p class="meta"><span>Probabilités</span><span class="lvl">●●○○</span></p>
+  <div class="body">
+    <p>Dans une classe de 23 élèves, quelle est la probabilité que <strong>deux d'entre eux</strong> soient nés le même jour de l'année ?</p>
+    <p>On oublie les années bissextiles et on suppose que toutes les dates sont aussi probables. La plupart des gens répondent « environ 6 % », car 23 est petit devant 365.</p>
+    <figure>
+      <svg viewBox="0 0 320 170" role="img" aria-label="Probabilité d'un anniversaire commun : 11,7 % pour 10 personnes, 50,7 % pour 23, 70,6 % pour 30, 97 % pour 50, 99,9 % pour 70">
+        <line x1="28" y1="85" x2="316" y2="85" class="s-soft f-none" stroke-width="1" stroke-dasharray="4 4"/>
+        <text x="2" y="89" class="f-soft" font-size="11">50 %</text>
+        <line x1="28" y1="140" x2="316" y2="140" class="s-ink f-none" stroke-width="1.5"/>
+        <rect x="32" y="127.1" width="36" height="12.9" rx="3" class="f-blue"/>
+        <rect x="90" y="84.2" width="36" height="55.8" rx="3" class="f-red"/>
+        <rect x="148" y="62.3" width="36" height="77.7" rx="3" class="f-blue"/>
+        <rect x="206" y="33.3" width="36" height="106.7" rx="3" class="f-blue"/>
+        <rect x="264" y="30.1" width="36" height="109.9" rx="3" class="f-blue"/>
+        <g font-size="12" text-anchor="middle">
+          <text x="50" y="121" class="f-blue">11,7 %</text>
+          <text x="108" y="78" class="f-red">50,7 %</text>
+          <text x="166" y="56" class="f-blue">70,6 %</text>
+          <text x="224" y="27" class="f-blue">97 %</text>
+          <text x="282" y="24" class="f-blue">99,9 %</text>
+        </g>
+        <g font-size="12" text-anchor="middle" class="f-soft">
+          <text x="50" y="157">10</text>
+          <text x="108" y="157" class="f-red">23</text>
+          <text x="166" y="157">30</text>
+          <text x="224" y="157">50</text>
+          <text x="282" y="157">70</text>
+        </g>
+      </svg>
+      <figcaption>Probabilité qu'au moins deux personnes partagent un anniversaire, selon le nombre de personnes.</figcaption>
+    </figure>
+    <p>Dès <strong>23 personnes</strong>, c'est plus d'une chance sur deux. Avec 50 personnes, c'est presque sûr.</p>
+    <p class="question">Comment expliquer un résultat si élevé ?</p>
+    <details class="hint">
+      <summary>Un indice</summary>
+      <p>Il est plus simple de calculer la probabilité que <strong>toutes</strong> les dates soient différentes.</p>
+    </details>
+  </div>
+  <button class="reveal" type="button">Voir l'explication</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Explication</p>
+    <p><span class="step">1.</span> On fait entrer les élèves un par un. Le 2<sup>e</sup> doit éviter 1 date : il a 364 chances sur 365. Le 3<sup>e</sup> doit en éviter 2 : 363 sur 365. Et ainsi de suite jusqu'au 23<sup>e</sup>.</p>
+    <p><span class="step">2.</span> La probabilité que toutes les dates soient différentes vaut donc :</p>
+    $$\frac{364}{365} \times \frac{363}{365} \times \cdots \times \frac{343}{365} \approx 0{,}493$$
+    <p><span class="step">3.</span> La probabilité d'avoir au moins un anniversaire commun vaut alors $1 - 0{,}493 = 0{,}507$, soit <strong>50,7 %</strong>.</p>
+    <p><span class="step">4.</span> Pourquoi notre intuition se trompe : on pense à <em>notre</em> anniversaire, alors qu'il s'agit de <strong>n'importe quelle paire</strong> d'élèves. Avec 23 élèves, on peut former $\frac{23 \times 22}{2} = 253$ paires. Cela fait 253 occasions d'avoir une coïncidence.</p>
+    <p class="keep"><b>À retenir</b>La probabilité que quelqu'un ait <em>votre</em> anniversaire parmi 22 autres personnes n'est que d'environ 6 %. Ce qui est fréquent, c'est une coïncidence entre deux personnes quelconques.</p>
+  </div>
+  <p class="more">Problème publié par Richard von Mises (1939). <a href="https://fr.wikipedia.org/wiki/Paradoxe_des_anniversaires" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="6" style="--c: var(--t-probleme)" hidden>
+  <span class="tag">Problème</span>
+  <h2>L'âge des trois filles</h2>
+  <p class="meta"><span>Logique · arithmétique</span><span class="lvl">●●○○</span></p>
+  <div class="body">
+    <p>Deux vieux amis se retrouvent.</p>
+    <ul>
+      <li>« J'ai trois filles. Le <strong>produit</strong> de leurs âges fait 36. »</li>
+      <li>« Je ne peux pas deviner avec ça. »</li>
+      <li>« La <strong>somme</strong> de leurs âges est le numéro de la maison d'en face. »</li>
+      <li>L'ami regarde la maison, réfléchit… « Il me manque encore une information. »</li>
+      <li>« Mon <strong>aînée</strong> adore le chocolat. »</li>
+      <li>« Alors je sais ! »</li>
+    </ul>
+    <p>Les âges sont des nombres entiers d'années.</p>
+    <p class="question">Quel âge ont les trois filles ?</p>
+    <details class="hint">
+      <summary>Un indice</summary>
+      <p>Écris toutes les façons d'obtenir 36 comme produit de trois entiers, avec leur somme. Pourquoi la somme ne suffit-elle pas à l'ami ?</p>
+    </details>
+  </div>
+  <button class="reveal" type="button">Voir la solution</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Solution</p>
+    <p><span class="step">1.</span> On liste toutes les possibilités :</p>
+    <div class="tablebox">
+      <table class="simpson">
+        <thead><tr><th>Âges</th><th>Produit</th><th>Somme</th></tr></thead>
+        <tbody>
+          <tr><td>1, 1, 36</td><td>36</td><td>38</td></tr>
+          <tr><td>1, 2, 18</td><td>36</td><td>21</td></tr>
+          <tr><td>1, 3, 12</td><td>36</td><td>16</td></tr>
+          <tr><td>1, 4, 9</td><td>36</td><td>14</td></tr>
+          <tr><td>1, 6, 6</td><td>36</td><td class="win">13</td></tr>
+          <tr><td>2, 2, 9</td><td>36</td><td class="win">13</td></tr>
+          <tr><td>2, 3, 6</td><td>36</td><td>11</td></tr>
+          <tr><td>3, 3, 4</td><td>36</td><td>10</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><span class="step">2.</span> L'ami connaît le numéro de la maison, et pourtant il hésite encore. Le numéro est donc une somme qui apparaît <strong>deux fois</strong> : c'est <strong>13</strong>. Il reste 1, 6, 6 ou 2, 2, 9.</p>
+    <p><span class="step">3.</span> « Mon aînée » : il y a une seule fille plus âgée que les autres. Avec 1, 6, 6, les deux plus grandes auraient le même âge. Il ne reste que <strong>2, 2 et 9 ans</strong>.</p>
+    <p class="keep"><b>À retenir</b>Le chocolat ne sert à rien : ce qui compte, c'est que l'ami ait <em>encore</em> besoin d'une information. Dans ce genre d'énigme, l'hésitation d'un personnage est elle-même un indice.</p>
+  </div>
+  <p class="more">Énigme classique de logique, connue sous de nombreuses variantes.</p>
+</article>
+
+<article class="card" data-n="7" style="--c: var(--t-fait)" hidden>
+  <span class="tag">Fait peu connu</span>
+  <h2>Une feuille pliée jusqu'à la Lune</h2>
+  <p class="meta"><span>Puissances de 2</span><span class="lvl">●○○○</span></p>
+  <div class="body">
+    <p>Une feuille de papier ordinaire fait environ <strong>0,1 mm</strong> d'épaisseur. À chaque pliage en deux, son épaisseur <strong>double</strong>.</p>
+    <figure>
+      <svg viewBox="0 0 320 120" role="img" aria-label="Une feuille pliée 0, 1, 2 puis 3 fois : 1, 2, 4 puis 8 épaisseurs">
+        <g class="f-blue-soft s-blue" stroke-width="1.5">
+          <rect x="20" y="86" width="50" height="6"/>
+          <rect x="100" y="80" width="50" height="6"/><rect x="100" y="86" width="50" height="6"/>
+          <rect x="180" y="68" width="50" height="6"/><rect x="180" y="74" width="50" height="6"/><rect x="180" y="80" width="50" height="6"/><rect x="180" y="86" width="50" height="6"/>
+          <rect x="260" y="44" width="50" height="6"/><rect x="260" y="50" width="50" height="6"/><rect x="260" y="56" width="50" height="6"/><rect x="260" y="62" width="50" height="6"/>
+          <rect x="260" y="68" width="50" height="6"/><rect x="260" y="74" width="50" height="6"/><rect x="260" y="80" width="50" height="6"/><rect x="260" y="86" width="50" height="6"/>
+        </g>
+        <g font-size="12" text-anchor="middle" class="f-soft">
+          <text x="45" y="110">0 pli</text><text x="125" y="110">1 pli</text><text x="205" y="110">2 plis</text><text x="285" y="110">3 plis</text>
+        </g>
+        <g font-size="12" text-anchor="middle" class="f-blue">
+          <text x="45" y="78">1</text><text x="125" y="72">2</text><text x="205" y="60">4</text><text x="285" y="36">8</text>
+        </g>
+      </svg>
+      <figcaption>Le nombre de couches double à chaque pli.</figcaption>
+    </figure>
+    <p>Si on pouvait la plier autant qu'on veut :</p>
+    <figure>
+      <div class="chain">
+        <div><b>7 plis : 1,3 cm</b><span>un carnet</span></div>
+        <div><b>10 plis : 10 cm</b><span>un gros livre</span></div>
+        <div><b>20 plis : 105 m</b><span>un immeuble</span></div>
+        <div><b>30 plis : 107 km</b><span>dans l'espace</span></div>
+        <div class="end"><b>42 plis : 440&nbsp;000 km</b><span>plus loin que la Lune</span></div>
+      </div>
+    </figure>
+    <p class="question">Pourquoi est-ce si rapide ? Et combien de fois a-t-on vraiment réussi à plier une feuille ?</p>
+  </div>
+  <button class="reveal" type="button">Voir l'explication</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Explication</p>
+    <p><span class="step">1.</span> Après $n$ plis, il y a $2^n$ couches. L'épaisseur vaut $2^n \times 0{,}1$ mm.</p>
+    <p><span class="step">2.</span> Or $2^{10} = 1024$, un peu plus de 1 000. Tous les 10 plis, l'épaisseur est donc multipliée par plus de 1 000.</p>
+    <p><span class="step">3.</span> Pour 42 plis : $2^{42} \approx 4{,}4 \times 10^{12}$ couches, soit environ $440\,000$ km. La distance moyenne de la Terre à la Lune est d'environ 384&nbsp;400 km.</p>
+    <p><span class="step">4.</span> En réalité, c'est impossible : à chaque pli, la feuille devient deux fois plus épaisse et deux fois plus petite. Le record est de <strong>12 plis</strong>. Il a été établi en 2002 par Britney Gallivan, une lycéenne américaine, avec un rouleau de papier d'environ 1,2 km de long.</p>
+    <p class="keep"><b>À retenir</b>Doubler sans arrêt dépasse très vite toute intuition. Avec seulement 42 doublements, on passe de l'épaisseur d'une feuille à la distance de la Lune.</p>
+  </div>
+  <p class="more">Le calcul et la méthode de Britney Gallivan ont été publiés en 2002.</p>
+</article>
+
+<article class="card" data-n="8" style="--c: var(--t-preuve)" hidden>
+  <span class="tag">Belle démonstration</span>
+  <h2>Pythagore sans calcul</h2>
+  <p class="meta"><span>Géométrie</span><span class="lvl">●○○○</span></p>
+  <div class="body">
+    <p>On connaît tous le théorème : dans un triangle rectangle de côtés $a$, $b$ et d'hypoténuse $c$,</p>
+    $$a^2 + b^2 = c^2$$
+    <p>Il existe des centaines de démonstrations. Celle-ci se fait en regardant un dessin.</p>
+    <p>On prend <strong>4 triangles rectangles identiques</strong> (en bleu) et on les range de deux façons dans un même carré de côté $a + b$ :</p>
+    <figure>
+      <svg viewBox="0 0 320 185" role="img" aria-label="À gauche, quatre triangles autour d'un carré penché de côté c. À droite, les mêmes quatre triangles laissent deux carrés de côtés a et b">
+        <rect x="10" y="22" width="140" height="140" style="fill: var(--red-soft)" class="s-red" stroke-width="2"/>
+        <g class="f-blue-soft s-blue" stroke-width="2">
+          <polygon points="10,22 70,22 10,102"/>
+          <polygon points="150,22 150,82 70,22"/>
+          <polygon points="150,162 90,162 150,82"/>
+          <polygon points="10,162 10,102 90,162"/>
+        </g>
+        <text x="80" y="98" text-anchor="middle" class="f-red" font-size="20">c²</text>
+        <rect x="170" y="22" width="140" height="140" style="fill: var(--red-soft)" class="s-red" stroke-width="2"/>
+        <g class="f-blue-soft s-blue" stroke-width="2">
+          <polygon points="230,22 310,22 230,82"/>
+          <polygon points="310,22 310,82 230,82"/>
+          <polygon points="170,82 230,82 170,162"/>
+          <polygon points="230,82 230,162 170,162"/>
+        </g>
+        <text x="200" y="58" text-anchor="middle" class="f-red" font-size="18">a²</text>
+        <text x="270" y="128" text-anchor="middle" class="f-red" font-size="20">b²</text>
+        <g font-size="12" text-anchor="middle" class="f-soft">
+          <text x="40" y="15">a</text><text x="110" y="15">b</text>
+          <text x="200" y="15">a</text><text x="270" y="15">b</text>
+          <text x="80" y="180">rangement 1</text><text x="240" y="180">rangement 2</text>
+        </g>
+      </svg>
+      <figcaption>Les deux grands carrés ont le même côté a + b. La partie rouge est ce qui reste libre.</figcaption>
+    </figure>
+    <p class="question">Pourquoi ce dessin prouve-t-il le théorème ?</p>
+  </div>
+  <button class="reveal" type="button">Voir la démonstration</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Démonstration</p>
+    <p><span class="step">1.</span> Les deux grands carrés ont la <strong>même aire</strong>, car ils ont le même côté $a + b$.</p>
+    <p><span class="step">2.</span> Dans chacun, on a posé les <strong>mêmes 4 triangles</strong>. Ils occupent la même aire dans les deux cas.</p>
+    <p><span class="step">3.</span> La partie rouge restante a donc la même aire dans les deux carrés.</p>
+    <p><span class="step">4.</span> À gauche, la partie rouge est un carré de côté $c$ : son aire est $c^2$. À droite, ce sont deux carrés de côtés $a$ et $b$ : leur aire totale est $a^2 + b^2$.</p>
+    <p><span class="step">5.</span> Donc $a^2 + b^2 = c^2$. ∎</p>
+    <p>Petit détail à vérifier : à gauche, la partie rouge est bien un carré. Ses quatre côtés valent $c$, et chacun de ses angles vaut 90°, car les deux angles aigus du triangle font ensemble 90°, et $180° - 90° = 90°$.</p>
+    <p class="keep"><b>À retenir</b>On a comparé des aires sans faire un seul calcul. Cette preuve par découpage se trouve déjà dans un ancien texte chinois, le <em>Zhoubi suanjing</em>.</p>
+  </div>
+  <p class="more">Preuve par réarrangement, connue depuis l'Antiquité. <a href="https://fr.wikipedia.org/wiki/Th%C3%A9or%C3%A8me_de_Pythagore" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="10" style="--c: var(--t-paradoxe)" hidden>
+  <span class="tag">Paradoxe</span>
+  <h2>Le carré qui disparaît</h2>
+  <p class="meta"><span>Géométrie · pentes</span><span class="lvl">●○○○</span></p>
+  <div class="body">
+    <p>On découpe un « triangle » de base 13 et de hauteur 5 en quatre morceaux : deux triangles (rouge et bleu) et deux pièces en L (vertes).</p>
+    <p>On déplace les morceaux, et on obtient le même triangle… avec <strong>une case vide</strong> !</p>
+    <figure>
+      <svg viewBox="0 0 320 105" role="img" aria-label="Deux dispositions des mêmes quatre pièces sur un quadrillage 13 par 5. Dans la seconde, une case est vide">
+        <path d="M10 20V75M21 20V75M32 20V75M43 20V75M54 20V75M65 20V75M76 20V75M87 20V75M98 20V75M109 20V75M120 20V75M131 20V75M142 20V75M153 20V75M10 20H153M10 31H153M10 42H153M10 53H153M10 64H153M10 75H153" class="f-none" style="stroke: var(--line)" stroke-width="1"/>
+        <path d="M167 20V75M178 20V75M189 20V75M200 20V75M211 20V75M222 20V75M233 20V75M244 20V75M255 20V75M266 20V75M277 20V75M288 20V75M299 20V75M310 20V75M167 20H310M167 31H310M167 42H310M167 53H310M167 64H310M167 75H310" class="f-none" style="stroke: var(--line)" stroke-width="1"/>
+        <g stroke-width="1.5" class="s-ink">
+          <polygon points="10,75 98,75 98,42" class="f-red"/>
+          <polygon points="98,42 153,42 153,20" class="f-blue"/>
+          <polygon points="98,75 153,75 153,64 131,64 131,53 98,53" style="fill: var(--green)"/>
+          <polygon points="131,64 153,64 153,42 98,42 98,53 131,53" style="fill: var(--green-soft)"/>
+          <polygon points="167,75 222,75 222,53" class="f-blue"/>
+          <polygon points="222,53 310,53 310,20" class="f-red"/>
+          <polygon points="222,75 277,75 277,64 255,64 255,53 222,53" style="fill: var(--green)"/>
+          <polygon points="288,75 310,75 310,53 255,53 255,64 288,64" style="fill: var(--green-soft)"/>
+        </g>
+        <rect x="277" y="64" width="11" height="11" class="f-sheet s-red" stroke-width="2" stroke-dasharray="3 2"/>
+        <g font-size="12" text-anchor="middle" class="f-soft">
+          <text x="81" y="95">disposition 1</text><text x="238" y="95">disposition 2</text>
+        </g>
+      </svg>
+      <figcaption>Mêmes pièces, même contour apparent. À droite, la case pointillée est vide.</figcaption>
+    </figure>
+    <p class="question">D'où vient la case manquante ?</p>
+    <details class="hint">
+      <summary>Un indice</summary>
+      <p>Compare la pente du triangle rouge et celle du triangle bleu.</p>
+    </details>
+  </div>
+  <button class="reveal" type="button">Voir l'explication</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Explication</p>
+    <p><span class="step">1.</span> Le triangle rouge monte de 3 cases pour 8 cases en largeur : sa pente vaut $\frac{3}{8} = 0{,}375$.</p>
+    <p><span class="step">2.</span> Le triangle bleu monte de 2 cases pour 5 en largeur : sa pente vaut $\frac{2}{5} = 0{,}4$.</p>
+    <p><span class="step">3.</span> Les pentes sont différentes, donc le grand « côté » n'est <strong>pas une ligne droite</strong>. Dans la disposition 1, il est très légèrement creusé vers l'intérieur. Dans la disposition 2, il est très légèrement bombé vers l'extérieur. Aucune des deux figures n'est vraiment un triangle.</p>
+    <p><span class="step">4.</span> La différence d'aire entre la figure bombée et la figure creusée vaut exactement <strong>1 case</strong>. C'est la case vide.</p>
+    <p><span class="step">5.</span> Vérification par l'aire : un vrai triangle 13 × 5 aurait une aire de 32,5. Les quatre pièces font 12 + 5 + 8 + 7 = 32 cases. La disposition 1 fait donc 32, et la disposition 2 fait 33 avec la case vide.</p>
+    <p class="keep"><b>À retenir</b>Un dessin peut tromper l'œil : un écart de pente de 0,025 ne se voit pas. Une figure ne remplace pas un calcul.</p>
+  </div>
+  <p class="more">Paradoxe présenté par le magicien Paul Curry (1953). <a href="https://fr.wikipedia.org/wiki/Paradoxe_du_carr%C3%A9_manquant" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="11" style="--c: var(--t-fait)" hidden>
+  <span class="tag">Fait peu connu</span>
+  <h2>Pourquoi la preuve par 9 marche</h2>
+  <p class="meta"><span>Arithmétique · divisibilité</span><span class="lvl">●●○○</span></p>
+  <div class="body">
+    <p>On l'a tous apprise à l'école pour vérifier une multiplication. Prenons $437 \times 58 = 25\,346$.</p>
+    <ul>
+      <li>437 : 4 + 3 + 7 = 14, puis 1 + 4 = <strong>5</strong>.</li>
+      <li>58 : 5 + 8 = 13, puis 1 + 3 = <strong>4</strong>.</li>
+      <li>5 × 4 = 20, puis 2 + 0 = <strong>2</strong>.</li>
+      <li>25 346 : 2 + 5 + 3 + 4 + 6 = 20, puis 2 + 0 = <strong>2</strong>.</li>
+    </ul>
+    <figure>
+      <svg viewBox="0 0 220 160" role="img" aria-label="La croix de la preuve par 9 : 5 à gauche, 4 à droite, 2 en haut, 2 en bas">
+        <line x1="50" y1="25" x2="170" y2="125" class="s-ink f-none" stroke-width="2.5"/>
+        <line x1="170" y1="25" x2="50" y2="125" class="s-ink f-none" stroke-width="2.5"/>
+        <g font-size="22" text-anchor="middle">
+          <text x="50" y="83" class="f-blue">5</text>
+          <text x="170" y="83" class="f-blue">4</text>
+          <text x="110" y="38" class="f-red">2</text>
+          <text x="110" y="135" class="f-red">2</text>
+        </g>
+        <g font-size="11" text-anchor="middle" class="f-soft">
+          <text x="30" y="105">437</text><text x="190" y="105">58</text><text x="110" y="14">5 × 4</text><text x="110" y="149">résultat</text>
+        </g>
+      </svg>
+      <figcaption>En haut et en bas, on trouve le même chiffre : la vérification est réussie.</figcaption>
+    </figure>
+    <p class="question">Pourquoi ce procédé fonctionne-t-il ? Et une preuve par 9 réussie garantit-elle que le résultat est juste ?</p>
+  </div>
+  <button class="reveal" type="button">Voir l'explication</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Explication</p>
+    <p><span class="step">1.</span> 10 = 9 + 1, 100 = 99 + 1, 1 000 = 999 + 1… Chaque puissance de 10 est un multiple de 9, plus 1.</p>
+    <p><span class="step">2.</span> Donc $437 = 4 \times 99 + 3 \times 9 + (4 + 3 + 7)$. Un nombre et la somme de ses chiffres ont le <strong>même reste</strong> dans la division par 9. Additionner les chiffres jusqu'à obtenir un seul chiffre revient à calculer ce reste (un 9 compte comme 0).</p>
+    <p><span class="step">3.</span> Le reste d'un produit se calcule avec les restes des facteurs. Si la multiplication est juste, les deux branches de la croix doivent donc donner le même chiffre.</p>
+    <p><span class="step">4.</span> Attention, l'inverse est faux. La preuve par 9 <strong>ne détecte pas</strong> :</p>
+    <ul>
+      <li>deux chiffres inversés : 25 436 donne aussi 2 ;</li>
+      <li>une erreur d'un multiple de 9 : 25 355 donne aussi 2 ;</li>
+      <li>un 0 oublié ou ajouté : 2 534 600 donne aussi 2.</li>
+    </ul>
+    <p class="keep"><b>À retenir</b>Si la preuve par 9 échoue, le calcul est sûrement faux. Si elle réussit, il est seulement probablement juste. Elle laisse passer environ une erreur au hasard sur neuf, plus les inversions de chiffres.</p>
+  </div>
+  <p class="more">Procédé connu des mathématiciens arabes et indiens, transmis en Europe au Moyen Âge. <a href="https://fr.wikipedia.org/wiki/Preuve_par_neuf" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="12" style="--c: var(--t-probleme)" hidden>
+  <span class="tag">Problème</span>
+  <h2>Le jeu des 21 allumettes</h2>
+  <p class="meta"><span>Logique · jeux</span><span class="lvl">●○○○</span></p>
+  <div class="body">
+    <p>Deux joueurs ont 21 allumettes devant eux. Chacun à son tour retire <strong>1, 2 ou 3 allumettes</strong>. Celui qui prend <strong>la dernière</strong> a perdu.</p>
+    <figure>
+      <svg viewBox="0 0 300 110" role="img" aria-label="21 allumettes rangées en cinq groupes de 4, plus une dernière allumette à part">
+        <g class="f-none" style="stroke: var(--sq-dark)" stroke-width="4" stroke-linecap="round">
+          <path d="M12 32V78M22 32V78M32 32V78M42 32V78M60 32V78M70 32V78M80 32V78M90 32V78M108 32V78M118 32V78M128 32V78M138 32V78M156 32V78M166 32V78M176 32V78M186 32V78M204 32V78M214 32V78M224 32V78M234 32V78"/>
+        </g>
+        <path d="M262 32V78" class="f-none s-red" stroke-width="4" stroke-linecap="round"/>
+        <g class="f-red">
+          <circle cx="12" cy="29" r="4.5"/><circle cx="22" cy="29" r="4.5"/><circle cx="32" cy="29" r="4.5"/><circle cx="42" cy="29" r="4.5"/>
+          <circle cx="60" cy="29" r="4.5"/><circle cx="70" cy="29" r="4.5"/><circle cx="80" cy="29" r="4.5"/><circle cx="90" cy="29" r="4.5"/>
+          <circle cx="108" cy="29" r="4.5"/><circle cx="118" cy="29" r="4.5"/><circle cx="128" cy="29" r="4.5"/><circle cx="138" cy="29" r="4.5"/>
+          <circle cx="156" cy="29" r="4.5"/><circle cx="166" cy="29" r="4.5"/><circle cx="176" cy="29" r="4.5"/><circle cx="186" cy="29" r="4.5"/>
+          <circle cx="204" cy="29" r="4.5"/><circle cx="214" cy="29" r="4.5"/><circle cx="224" cy="29" r="4.5"/><circle cx="234" cy="29" r="4.5"/>
+          <circle cx="262" cy="29" r="4.5"/>
+        </g>
+        <path d="M10 88H44M58 88H92M106 88H140M154 88H188M202 88H236" class="f-none s-soft" stroke-width="1.5"/>
+        <g font-size="12" text-anchor="middle" class="f-soft">
+          <text x="27" y="103">4</text><text x="75" y="103">4</text><text x="123" y="103">4</text><text x="171" y="103">4</text><text x="219" y="103">4</text>
+          <text x="262" y="103" class="f-red">la dernière</text>
+        </g>
+      </svg>
+      <figcaption>21 = 5 × 4 + 1. Le regroupement par 4 n'est pas un hasard.</figcaption>
+    </figure>
+    <p class="question">Vaut-il mieux jouer en premier ou en second ? Et comment être sûr de gagner ?</p>
+    <details class="hint">
+      <summary>Un indice</summary>
+      <p>Pars de la fin. S'il reste 1 allumette quand c'est ton tour, tu as perdu. Et s'il en reste 5 ?</p>
+    </details>
+  </div>
+  <button class="reveal" type="button">Voir la solution</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Solution</p>
+    <p><strong>Il faut jouer en second</strong>, et on gagne à coup sûr.</p>
+    <p><span class="step">1.</span> S'il reste <strong>1</strong> allumette à ton tour, tu dois la prendre : perdu.</p>
+    <p><span class="step">2.</span> S'il en reste <strong>5</strong> à ton tour : si tu en prends 1, 2 ou 3, l'adversaire en prend 3, 2 ou 1 et t'en laisse 1. Perdu aussi.</p>
+    <p><span class="step">3.</span> De la même façon, 9, 13, 17 et 21 sont des positions perdantes pour celui qui doit jouer. Ce sont les nombres qui valent 1 de plus qu'un multiple de 4.</p>
+    <p><span class="step">4.</span> <strong>La stratégie du second joueur</strong> : si l'adversaire prend 1, 2 ou 3 allumettes, il en prend 3, 2 ou 1. Chaque tour enlève exactement 4 allumettes. Il reste successivement 17, 13, 9, 5, puis 1, et c'est l'adversaire qui doit prendre la dernière.</p>
+    <p><span class="step">5.</span> Avec un autre nombre au départ, par exemple 20, c'est le premier joueur qui gagne : il prend 3 allumettes pour en laisser 17, puis applique la même méthode.</p>
+    <p class="keep"><b>À retenir</b>Pour gagner, laisse toujours à l'adversaire 1, 5, 9, 13 ou 17 allumettes. Raisonner en partant de la fin est une méthode puissante pour beaucoup de jeux.</p>
+  </div>
+  <p class="more">Variante du jeu de Nim, rendue célèbre en France par l'émission <em>Fort Boyard</em>. <a href="https://fr.wikipedia.org/wiki/Jeux_de_Nim" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="13" style="--c: var(--t-paradoxe)" hidden>
+  <span class="tag">Paradoxe</span>
+  <h2>Le flocon au périmètre infini</h2>
+  <p class="meta"><span>Géométrie · suites</span><span class="lvl">●●○○</span></p>
+  <div class="body">
+    <p>On part d'un triangle équilatéral. Sur chaque côté, on coupe le tiers du milieu et on le remplace par deux segments de même longueur, qui forment une petite pointe vers l'extérieur. Puis on recommence sur chaque nouveau côté, indéfiniment.</p>
+    <figure>
+      <svg viewBox="0 0 320 145" role="img" aria-label="Les trois premières étapes du flocon de Koch : un triangle, une étoile à six branches, puis une forme plus découpée">
+        <g class="f-blue-soft s-blue" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M15.0 95.1 L55.0 25.8 L95.0 95.1 Z"/>
+          <path d="M120.0 95.1 L133.3 72.0 L120.0 48.9 L146.7 48.9 L160.0 25.8 L173.3 48.9 L200.0 48.9 L186.7 72.0 L200.0 95.1 L173.3 95.1 L160.0 118.2 L146.7 95.1 Z"/>
+          <path d="M225.0 95.1 L229.4 87.4 L225.0 79.7 L233.9 79.7 L238.3 72.0 L233.9 64.3 L225.0 64.3 L229.4 56.6 L225.0 48.9 L233.9 48.9 L238.3 41.2 L242.8 48.9 L251.7 48.9 L256.1 41.2 L251.7 33.5 L260.6 33.5 L265.0 25.8 L269.4 33.5 L278.3 33.5 L273.9 41.2 L278.3 48.9 L287.2 48.9 L291.7 41.2 L296.1 48.9 L305.0 48.9 L300.6 56.6 L305.0 64.3 L296.1 64.3 L291.7 72.0 L296.1 79.7 L305.0 79.7 L300.6 87.4 L305.0 95.1 L296.1 95.1 L291.7 102.8 L287.2 95.1 L278.3 95.1 L273.9 102.8 L278.3 110.5 L269.4 110.5 L265.0 118.2 L260.6 110.5 L251.7 110.5 L256.1 102.8 L251.7 95.1 L242.8 95.1 L238.3 102.8 L233.9 95.1 Z"/>
+        </g>
+        <g font-size="12" text-anchor="middle" class="f-soft">
+          <text x="55" y="138">départ</text><text x="160" y="138">étape 1</text><text x="265" y="138">étape 2</text>
+        </g>
+      </svg>
+      <figcaption>À chaque étape, chaque côté est remplacé par 4 côtés trois fois plus courts.</figcaption>
+    </figure>
+    <p class="question">Que deviennent le périmètre et l'aire de cette figure si on continue à l'infini ?</p>
+  </div>
+  <button class="reveal" type="button">Voir l'explication</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Explication</p>
+    <p><strong>Le périmètre devient infini, mais l'aire reste finie.</strong></p>
+    <p><span class="step">1. Le périmètre.</span> Chaque côté est remplacé par 4 morceaux de $\frac13$ de sa longueur. Le périmètre est donc multiplié par $\frac43$ à chaque étape.</p>
+    <figure>
+      <div class="chain">
+        <div><b>départ : 3</b><span>côté 1</span></div>
+        <div><b>étape 1 : 4</b><span>× 4/3</span></div>
+        <div><b>étape 2 : 5,33</b><span>× 4/3</span></div>
+        <div><b>étape 10 : 53</b><span></span></div>
+        <div class="end"><b>étape 20 : 946</b><span>et ça continue</span></div>
+      </div>
+    </figure>
+    <p>Multiplier sans arrêt par un nombre plus grand que 1 finit par dépasser n'importe quelle longueur.</p>
+    <p><span class="step">2. L'aire.</span> Pourtant, le flocon tient toujours dans le cercle qui passe par les sommets de l'étoile de l'étape 1. Son aire ne peut pas dépasser celle de ce cercle.</p>
+    <p><span class="step">3. Le calcul exact.</span> Appelons $A$ l'aire du triangle de départ. L'étape 1 ajoute 3 petits triangles d'aire $\frac{A}{9}$ chacun, soit $\frac{A}{3}$. À chaque étape suivante, il y a 4 fois plus de petits triangles, chacun 9 fois plus petit : on ajoute $\frac49$ de ce qu'on avait ajouté avant. L'aire totale vaut</p>
+    $$A + \frac{A}{3}\left(1 + \frac49 + \left(\frac49\right)^2 + \cdots\right) = A + \frac{A}{3} \times \frac{9}{5} = \frac{8}{5}\,A$$
+    <p class="keep"><b>À retenir</b>Une figure peut avoir un bord de longueur infinie tout en enfermant une surface finie : 1,6 fois le triangle de départ. C'est l'un des premiers exemples de « fractale ».</p>
+  </div>
+  <p class="more">Courbe décrite par le mathématicien suédois Helge von Koch (1904). <a href="https://fr.wikipedia.org/wiki/Flocon_de_Koch" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="14" style="--c: var(--t-preuve)" hidden>
+  <span class="tag">Belle démonstration</span>
+  <h2>Les nombres premiers ne s'arrêtent jamais</h2>
+  <p class="meta"><span>Arithmétique</span><span class="lvl">●●○○</span></p>
+  <div class="body">
+    <p>2, 3, 5, 7, 11, 13, 17… Plus on avance, plus les nombres premiers se font rares. On pourrait croire qu'il existe un dernier nombre premier, le plus grand de tous.</p>
+    <p>Il y a 2 300 ans, Euclide a montré que non, avec une idée toute simple : multiplier des nombres premiers entre eux, puis <strong>ajouter 1</strong>.</p>
+    <div class="tablebox">
+      <table class="simpson">
+        <thead><tr><th>Produit + 1</th><th>Résultat</th><th>Premier ?</th></tr></thead>
+        <tbody>
+          <tr><td>2 + 1</td><td>3</td><td class="win">oui</td></tr>
+          <tr><td>2 × 3 + 1</td><td>7</td><td class="win">oui</td></tr>
+          <tr><td>2 × 3 × 5 + 1</td><td>31</td><td class="win">oui</td></tr>
+          <tr><td>2 × 3 × 5 × 7 + 1</td><td>211</td><td class="win">oui</td></tr>
+          <tr><td>2 × 3 × 5 × 7 × 11 + 1</td><td>2 311</td><td class="win">oui</td></tr>
+          <tr><td>2 × 3 × 5 × 7 × 11 × 13 + 1</td><td>30 031</td><td>non<small>= 59 × 509</small></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="question">Le dernier résultat n'est pas premier. Pourquoi la méthode d'Euclide marche-t-elle quand même ?</p>
+    <details class="hint">
+      <summary>Un indice</summary>
+      <p>Que reste-t-il quand on divise 30 031 par 2, par 3, par 5… par 13 ?</p>
+    </details>
+  </div>
+  <button class="reveal" type="button">Voir la démonstration</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Démonstration</p>
+    <p><span class="step">1.</span> Supposons qu'il n'y ait qu'un nombre fini de nombres premiers. On les multiplie tous, et on ajoute 1. Appelons ce nombre $N$.</p>
+    <p><span class="step">2.</span> Divisons $N$ par n'importe quel nombre premier de la liste. Le produit se divise exactement, et il reste toujours le « + 1 » : <strong>le reste vaut 1</strong>. Aucun nombre de la liste ne divise donc $N$.</p>
+    <p><span class="step">3.</span> Or $N$ est plus grand que 1, donc il a au moins un diviseur premier. Ce diviseur n'est pas dans la liste.</p>
+    <p><span class="step">4.</span> La liste n'était donc pas complète. C'est vrai pour n'importe quelle liste finie : les nombres premiers sont <strong>en nombre infini</strong>. ∎</p>
+    <p><span class="step">5.</span> L'exemple 30 031 montre le point délicat : $N$ n'est pas forcément premier lui-même. Mais ses diviseurs premiers, 59 et 509, sont bien nouveaux : ils ne figurent pas parmi 2, 3, 5, 7, 11, 13.</p>
+    <p class="keep"><b>À retenir</b>Euclide ne fabrique pas un nouveau nombre premier. Il prouve qu'il en existe toujours un autre, caché dans « produit + 1 ». C'est une erreur fréquente de croire que ce nombre est toujours premier.</p>
+  </div>
+  <p class="more">Euclide, <em>Les Éléments</em>, livre IX, proposition 20 (vers 300 av. J.-C.). <a href="https://fr.wikipedia.org/wiki/Th%C3%A9or%C3%A8me_d%27Euclide_sur_les_nombres_premiers" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="15" style="--c: var(--t-paradoxe)" hidden>
+  <span class="tag">Paradoxe</span>
+  <h2>Faut-il changer de porte ?</h2>
+  <p class="meta"><span>Probabilités</span><span class="lvl">●●○○</span></p>
+  <div class="body">
+    <p>Dans un jeu télévisé, il y a trois portes. Derrière l'une se trouve une voiture, derrière les deux autres une chèvre.</p>
+    <ol>
+      <li>Tu choisis une porte, par exemple la n°1.</li>
+      <li>Le présentateur, <strong>qui sait où est la voiture</strong>, ouvre une autre porte, toujours sur une chèvre.</li>
+      <li>Il te propose de garder ta porte ou de prendre l'autre porte fermée.</li>
+    </ol>
+    <p class="question">Vaut-il mieux garder sa porte, changer, ou est-ce pareil ?</p>
+    <details class="hint">
+      <summary>Un indice</summary>
+      <p>Avec la stratégie « je change toujours », dans quel cas perds-tu ?</p>
+    </details>
+  </div>
+  <button class="reveal" type="button">Voir l'explication</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Explication</p>
+    <p><strong>Il faut changer : on gagne 2 fois sur 3.</strong> Beaucoup de gens pensent que c'est 50-50, mais c'est faux.</p>
+    <p><span class="step">1.</span> Tu as choisi la porte 1. La voiture peut être derrière chacune des trois portes, avec la même probabilité :</p>
+    <div class="tablebox">
+      <table class="simpson">
+        <thead><tr><th>La voiture est…</th><th>Le présentateur ouvre</th><th>Je garde</th><th>Je change</th></tr></thead>
+        <tbody>
+          <tr><td>derrière la 1</td><td>la 2 ou la 3</td><td class="win">gagné</td><td>perdu</td></tr>
+          <tr><td>derrière la 2</td><td>la 3</td><td>perdu</td><td class="win">gagné</td></tr>
+          <tr><td>derrière la 3</td><td>la 2</td><td>perdu</td><td class="win">gagné</td></tr>
+          <tr class="total"><td>Bilan</td><td></td><td>1 sur 3</td><td class="win">2 sur 3</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><span class="step">2.</span> En changeant, on perd seulement si on avait visé juste du premier coup, c'est-à-dire 1 fois sur 3. Les 2 autres fois, le présentateur a écarté l'autre chèvre, et l'autre porte cache forcément la voiture.</p>
+    <p><span class="step">3.</span> Pour s'en convaincre, imagine <strong>100 portes</strong>. Tu en choisis une, et le présentateur ouvre 98 portes à chèvre. Il reste ta porte et une seule autre. Tu changerais, non ?</p>
+    <p><span class="step">4.</span> Tout repose sur le fait que le présentateur <strong>sait</strong> et n'ouvre jamais la porte de la voiture. S'il ouvrait au hasard et tombait par chance sur une chèvre, ce serait bien 50-50.</p>
+    <p class="keep"><b>À retenir</b>En 1990, la journaliste Marilyn vos Savant donne cette réponse dans le magazine <em>Parade</em>. Elle reçoit des milliers de lettres pour lui dire qu'elle se trompe, dont beaucoup signées par des docteurs en mathématiques. C'est elle qui avait raison.</p>
+  </div>
+  <p class="more">Problème publié par Steve Selvin (1975), du nom du présentateur américain Monty Hall. <a href="https://fr.wikipedia.org/wiki/Probl%C3%A8me_de_Monty_Hall" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="16" style="--c: var(--t-fait)" hidden>
+  <span class="tag">Fait peu connu</span>
+  <h2>Calculer une aire en comptant des points</h2>
+  <p class="meta"><span>Géométrie · quadrillage</span><span class="lvl">●●○○</span></p>
+  <div class="body">
+    <p>Dessine un polygone sur du papier à points, avec ses sommets <strong>sur les points</strong> du quadrillage. Il existe une formule étonnante pour trouver son aire sans aucune mesure :</p>
+    $$\text{Aire} = I + \frac{B}{2} - 1$$
+    <p>$I$ est le nombre de points <strong>à l'intérieur</strong>, et $B$ le nombre de points <strong>sur le bord</strong>.</p>
+    <figure>
+      <svg viewBox="0 0 260 220" role="img" aria-label="Un quadrilatère sur un quadrillage de points, avec 12 points intérieurs en bleu et 4 points sur le bord en rouge">
+        <circle cx="30" cy="190" r="2.5" style="fill: var(--line)"/><circle cx="30" cy="150" r="2.5" style="fill: var(--line)"/><circle cx="30" cy="110" r="2.5" style="fill: var(--line)"/><circle cx="30" cy="30" r="2.5" style="fill: var(--line)"/><circle cx="70" cy="30" r="2.5" style="fill: var(--line)"/><circle cx="110" cy="190" r="2.5" style="fill: var(--line)"/><circle cx="110" cy="30" r="2.5" style="fill: var(--line)"/><circle cx="150" cy="190" r="2.5" style="fill: var(--line)"/><circle cx="150" cy="30" r="2.5" style="fill: var(--line)"/><circle cx="190" cy="190" r="2.5" style="fill: var(--line)"/><circle cx="230" cy="190" r="2.5" style="fill: var(--line)"/><circle cx="230" cy="110" r="2.5" style="fill: var(--line)"/><circle cx="230" cy="70" r="2.5" style="fill: var(--line)"/><circle cx="230" cy="30" r="2.5" style="fill: var(--line)"/>
+        <polygon points="70,190 230,150 190,30 30,70" class="f-blue-soft s-blue" stroke-width="2.5"/>
+        <g class="f-blue">
+          <circle cx="70" cy="150" r="5.5"/><circle cx="70" cy="110" r="5.5"/><circle cx="70" cy="70" r="5.5"/><circle cx="110" cy="150" r="5.5"/><circle cx="110" cy="110" r="5.5"/><circle cx="110" cy="70" r="5.5"/><circle cx="150" cy="150" r="5.5"/><circle cx="150" cy="110" r="5.5"/><circle cx="150" cy="70" r="5.5"/><circle cx="190" cy="150" r="5.5"/><circle cx="190" cy="110" r="5.5"/><circle cx="190" cy="70" r="5.5"/>
+        </g>
+        <g class="f-red">
+          <circle cx="70" cy="190" r="6.5"/><circle cx="230" cy="150" r="6.5"/><circle cx="190" cy="30" r="6.5"/><circle cx="30" cy="70" r="6.5"/>
+        </g>
+      </svg>
+      <figcaption>En bleu, 12 points à l'intérieur. En rouge, 4 points sur le bord (ici, seulement les sommets). Les points sont espacés d'une unité.</figcaption>
+    </figure>
+    <p class="question">Que donne la formule sur ce dessin ? Peux-tu vérifier l'aire d'une autre façon ?</p>
+    <details class="hint">
+      <summary>Un indice</summary>
+      <p>Pour vérifier, encadre la figure dans un rectangle et enlève les triangles des coins.</p>
+    </details>
+  </div>
+  <button class="reveal" type="button">Voir la solution</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Solution</p>
+    <p><span class="step">1. Avec la formule.</span> $I = 12$ et $B = 4$, donc l'aire vaut $12 + \frac{4}{2} - 1 = 13$ unités.</p>
+    <p><span class="step">2. Vérification.</span> La figure tient dans un rectangle de 5 sur 4, d'aire 20. Il faut enlever les quatre triangles rectangles des coins :</p>
+    <ul>
+      <li>en bas à gauche : côtés 1 et 3, aire 1,5 ;</li>
+      <li>en bas à droite : côtés 4 et 1, aire 2 ;</li>
+      <li>en haut à droite : côtés 1 et 3, aire 1,5 ;</li>
+      <li>en haut à gauche : côtés 4 et 1, aire 2.</li>
+    </ul>
+    <p>On obtient $20 - 7 = 13$. C'est bien le même résultat.</p>
+    <p><span class="step">3.</span> La formule marche pour <strong>tout</strong> polygone dont les sommets sont sur le quadrillage, même avec des angles rentrants, à condition qu'il n'ait pas de trou. Un bon exercice : la tester sur un carré de 2 sur 2 ($I = 1$, $B = 8$).</p>
+    <p class="keep"><b>À retenir</b>Les points du bord comptent pour moitié, ceux de l'intérieur comptent pour 1, et on retire 1. C'est une belle activité pour une classe : chacun dessine sa figure et vérifie.</p>
+  </div>
+  <p class="more">Formule publiée par le mathématicien autrichien Georg Pick (1899). <a href="https://fr.wikipedia.org/wiki/Th%C3%A9or%C3%A8me_de_Pick" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="17" style="--c: var(--t-probleme)" hidden>
+  <span class="tag">Problème</span>
+  <h2>La bille trop lourde</h2>
+  <p class="meta"><span>Logique</span><span class="lvl">●●○○</span></p>
+  <div class="body">
+    <p>On a <strong>9 billes</strong> qui se ressemblent toutes. Huit ont exactement le même poids, mais une est un peu <strong>plus lourde</strong>.</p>
+    <p>On dispose d'une balance à deux plateaux, sans poids. Elle dit seulement quel côté est le plus lourd, ou s'il y a équilibre.</p>
+    <p class="question">Comment trouver la bille lourde en seulement <strong>2 pesées</strong> ?</p>
+    <details class="hint">
+      <summary>Un indice</summary>
+      <p>Une pesée a trois résultats possibles, pas deux. Profite de l'équilibre !</p>
+    </details>
+  </div>
+  <button class="reveal" type="button">Voir la solution</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Solution</p>
+    <p><span class="step">1.</span> On fait <strong>3 groupes de 3 billes</strong>. On pèse le groupe 1 contre le groupe 2. Le groupe 3 attend sur la table.</p>
+    <figure>
+      <svg viewBox="0 0 320 212" role="img" aria-label="Arbre de la première pesée avec trois issues possibles">
+        <rect x="55" y="8" width="210" height="44" rx="10" class="f-blue-soft s-blue" stroke-width="2"/>
+        <text x="160" y="27" text-anchor="middle" font-size="13" class="f-blue">Pesée 1</text>
+        <text x="160" y="44" text-anchor="middle" font-size="12" class="f-blue">groupe 1 contre groupe 2</text>
+        <g class="s-soft f-none" stroke-width="2">
+          <line x1="110" y1="52" x2="53" y2="100"/>
+          <line x1="160" y1="52" x2="160" y2="100"/>
+          <line x1="210" y1="52" x2="267" y2="100"/>
+        </g>
+        <g class="f-sheet s-red" stroke-width="2">
+          <rect x="5" y="100" width="96" height="62" rx="10"/>
+          <rect x="112" y="100" width="96" height="62" rx="10"/>
+          <rect x="219" y="100" width="96" height="62" rx="10"/>
+        </g>
+        <g text-anchor="middle" font-size="12" class="f-ink">
+          <text x="53" y="121">gauche</text><text x="53" y="136">plus lourde</text>
+          <text x="160" y="121">équilibre</text>
+          <text x="267" y="121">droite</text><text x="267" y="136">plus lourde</text>
+        </g>
+        <g text-anchor="middle" font-size="12" class="f-red">
+          <text x="53" y="154">→ groupe 1</text>
+          <text x="160" y="146">→ groupe 3</text>
+          <text x="267" y="154">→ groupe 2</text>
+        </g>
+        <text x="160" y="196" text-anchor="middle" font-size="12" class="f-soft">On sait dans quel groupe de 3 est la bille lourde.</text>
+      </svg>
+    </figure>
+    <p><span class="step">2.</span> Après la première pesée, on sait dans quel groupe de 3 se trouve la bille lourde.</p>
+    <p><span class="step">3.</span> On prend ce groupe et on pèse <strong>une bille contre une autre</strong>. Si un côté penche, la plus lourde est trouvée. S'il y a équilibre, c'est la troisième bille, restée sur la table.</p>
+    <p><span class="step">4.</span> Pourquoi ça marche : chaque pesée a <strong>3 issues</strong>. Deux pesées donnent $3 \times 3 = 9$ cas, juste assez pour 9 billes. Avec 3 pesées, on pourrait même s'en sortir avec 27 billes.</p>
+    <p class="keep"><b>À retenir</b>Il faut toujours garder un groupe hors de la balance : l'équilibre donne autant d'information qu'un plateau qui penche. Pour un défi plus coriace : <strong>12 pièces</strong>, une fausse dont on ne sait pas si elle est plus lourde ou plus légère, et 3 pesées. C'est possible, mais beaucoup plus dur !</p>
+  </div>
+  <p class="more">Énigme classique des livres de récréations mathématiques.</p>
+</article>
+
+<article class="card" data-n="18" style="--c: var(--t-preuve)" hidden>
+  <span class="tag">Belle démonstration</span>
+  <h2>Les sept ponts de Königsberg</h2>
+  <p class="meta"><span>Graphes · logique</span><span class="lvl">●○○○</span></p>
+  <div class="body">
+    <p>La ville de Königsberg (aujourd'hui Kaliningrad) est traversée par un fleuve, la Pregel. Elle forme <strong>4 quartiers</strong> : une rive nord, une rive sud, une île et une partie est. Ils sont reliés par <strong>7 ponts</strong>.</p>
+    <p>Les habitants se posaient une question : peut-on faire une promenade qui passe <strong>une seule fois</strong> sur chaque pont ?</p>
+    <figure>
+      <svg viewBox="0 0 320 225" role="img" aria-label="Les 4 quartiers dessinés comme des points, reliés par 7 traits pour les 7 ponts">
+        <g class="s-blue f-none" stroke-width="3" stroke-linecap="round">
+          <path d="M120 110 Q100 62 160 30"/>
+          <path d="M120 110 Q162 86 160 30"/>
+          <path d="M120 110 Q100 158 160 190"/>
+          <path d="M120 110 Q162 134 160 190"/>
+          <line x1="120" y1="110" x2="270" y2="110"/>
+          <path d="M160 30 Q252 38 270 110"/>
+          <path d="M160 190 Q252 182 270 110"/>
+        </g>
+        <g class="f-sheet s-red" stroke-width="2.5">
+          <circle cx="160" cy="30" r="17"/>
+          <circle cx="120" cy="110" r="17"/>
+          <circle cx="160" cy="190" r="17"/>
+          <circle cx="270" cy="110" r="17"/>
+        </g>
+        <g text-anchor="middle" font-size="13" class="f-red">
+          <text x="160" y="35">N</text><text x="120" y="115">Île</text><text x="160" y="195">S</text><text x="270" y="115">E</text>
+        </g>
+        <g font-size="12" class="f-soft">
+          <text x="136" y="22" text-anchor="end">3 ponts</text>
+          <text x="98" y="115" text-anchor="end">5 ponts</text>
+          <text x="136" y="212" text-anchor="end">3 ponts</text>
+          <text x="270" y="146" text-anchor="middle">3 ponts</text>
+        </g>
+      </svg>
+      <figcaption>Chaque quartier devient un point, et chaque pont un trait. On a noté le nombre de ponts qui partent de chaque quartier.</figcaption>
+    </figure>
+    <p class="question">Une telle promenade existe-t-elle ? Comment en être sûr sans essayer tous les chemins ?</p>
+    <details class="hint">
+      <summary>Un indice</summary>
+      <p>Quand on traverse un quartier au milieu de la promenade, on y entre par un pont et on en ressort par un autre.</p>
+    </details>
+  </div>
+  <button class="reveal" type="button">Voir la démonstration</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Démonstration</p>
+    <p><strong>C'est impossible.</strong> Euler l'a prouvé en 1736, et c'est le premier résultat de ce qu'on appelle aujourd'hui la théorie des graphes.</p>
+    <p><span class="step">1.</span> Chaque fois que la promenade <strong>traverse</strong> un quartier, elle utilise deux ponts : un pour entrer, un pour sortir. Les ponts d'un quartier traversé vont donc par paires : il en faut un <strong>nombre pair</strong>.</p>
+    <p><span class="step">2.</span> Seuls deux quartiers échappent à la règle : celui du <strong>départ</strong> et celui de l'<strong>arrivée</strong>. Ils peuvent avoir un nombre impair de ponts.</p>
+    <p><span class="step">3.</span> Une promenade possible a donc <strong>au plus 2 quartiers</strong> avec un nombre impair de ponts.</p>
+    <p><span class="step">4.</span> À Königsberg, les quatre quartiers ont un nombre impair de ponts : 5, 3, 3 et 3. C'est deux de trop. La promenade est impossible. ∎</p>
+    <p class="keep"><b>À retenir</b>On peut dessiner une figure d'un seul trait, sans repasser, seulement si elle a 0 ou 2 points où se rejoint un nombre impair de traits. C'est le principe du dessin de « l'enveloppe » d'un seul trait : il faut partir d'un des deux points impairs.</p>
+  </div>
+  <p class="more">Leonhard Euler, mémoire présenté en 1736. <a href="https://fr.wikipedia.org/wiki/Probl%C3%A8me_des_sept_ponts_de_K%C3%B6nigsberg" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="19" style="--c: var(--t-paradoxe)" hidden>
+  <span class="tag">Paradoxe</span>
+  <h2>Quatre dés qui se battent en rond</h2>
+  <p class="meta"><span>Probabilités</span><span class="lvl">●●●○</span></p>
+  <div class="body">
+    <p>Voici quatre dés un peu spéciaux. Deux joueurs lancent chacun un dé, et le plus grand nombre gagne.</p>
+    <div class="tablebox">
+      <table class="simpson">
+        <thead><tr><th>Dé</th><th>Ses 6 faces</th></tr></thead>
+        <tbody>
+          <tr><td>A</td><td>4 · 4 · 4 · 4 · 0 · 0</td></tr>
+          <tr><td>B</td><td>3 · 3 · 3 · 3 · 3 · 3</td></tr>
+          <tr><td>C</td><td>6 · 6 · 2 · 2 · 2 · 2</td></tr>
+          <tr><td>D</td><td>5 · 5 · 5 · 1 · 1 · 1</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>A bat B 2 fois sur 3. B bat C 2 fois sur 3. C bat D 2 fois sur 3. Donc D devrait être le plus faible…</p>
+    <p class="question">Et pourtant, qui gagne le plus souvent entre D et A ?</p>
+  </div>
+  <button class="reveal" type="button">Voir l'explication</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Explication</p>
+    <p><strong>D bat A, lui aussi 2 fois sur 3.</strong> Les quatre dés forment une boucle, comme au jeu pierre-feuille-ciseaux.</p>
+    <figure>
+      <svg viewBox="0 0 300 220" role="img" aria-label="Cycle : A bat B, B bat C, C bat D, D bat A, chaque fois avec 2 chances sur 3">
+        <defs>
+          <marker id="arr-19" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" style="fill: var(--red)"/>
+          </marker>
+        </defs>
+        <g class="s-red f-none" stroke-width="2.5" marker-end="url(#arr-19)">
+          <line x1="112" y1="45" x2="186" y2="45"/>
+          <line x1="235" y1="72" x2="235" y2="146"/>
+          <line x1="188" y1="175" x2="114" y2="175"/>
+          <line x1="65" y1="148" x2="65" y2="74"/>
+        </g>
+        <g class="f-blue-soft s-blue" stroke-width="2">
+          <rect x="20" y="20" width="90" height="50" rx="10"/>
+          <rect x="190" y="20" width="90" height="50" rx="10"/>
+          <rect x="190" y="150" width="90" height="50" rx="10"/>
+          <rect x="20" y="150" width="90" height="50" rx="10"/>
+        </g>
+        <g text-anchor="middle" class="f-blue">
+          <text x="65" y="42" font-size="15">Dé A</text><text x="65" y="60" font-size="11">4 4 4 4 0 0</text>
+          <text x="235" y="42" font-size="15">Dé B</text><text x="235" y="60" font-size="11">3 3 3 3 3 3</text>
+          <text x="235" y="172" font-size="15">Dé C</text><text x="235" y="190" font-size="11">6 6 2 2 2 2</text>
+          <text x="65" y="172" font-size="15">Dé D</text><text x="65" y="190" font-size="11">5 5 5 1 1 1</text>
+        </g>
+        <g font-size="13" class="f-red">
+          <text x="150" y="36" text-anchor="middle">bat · 2/3</text>
+          <text x="244" y="114">2/3</text>
+          <text x="150" y="215" text-anchor="middle">bat · 2/3</text>
+          <text x="56" y="114" text-anchor="end">2/3</text>
+        </g>
+      </svg>
+      <figcaption>La flèche va du dé gagnant vers le dé perdant.</figcaption>
+    </figure>
+    <p><span class="step">1. A contre B.</span> B fait toujours 3. A gagne dès qu'il fait 4 : 4 faces sur 6, soit $\frac{2}{3}$.</p>
+    <p><span class="step">2. C contre D.</span> On regarde les deux cas pour C :</p>
+    <ul>
+      <li>C fait 6 (probabilité $\frac{2}{6}$) : il gagne toujours ;</li>
+      <li>C fait 2 (probabilité $\frac{4}{6}$) : il gagne seulement si D fait 1, une fois sur deux, soit $\frac{4}{6} \times \frac{1}{2} = \frac{2}{6}$.</li>
+    </ul>
+    <p>Au total, C gagne avec une probabilité de $\frac{2}{6} + \frac{2}{6} = \frac{2}{3}$.</p>
+    <p><span class="step">3. D contre A.</span> Même méthode :</p>
+    <ul>
+      <li>D fait 5 (probabilité $\frac{1}{2}$) : il bat le 4 comme le 0 ;</li>
+      <li>D fait 1 (probabilité $\frac{1}{2}$) : il gagne seulement si A fait 0, soit $\frac{1}{2} \times \frac{2}{6} = \frac{1}{6}$.</li>
+    </ul>
+    <p>Au total, D gagne avec une probabilité de $\frac{1}{2} + \frac{1}{6} = \frac{2}{3}$.</p>
+    <p class="keep"><b>À retenir</b>« Battre » n'est pas transitif : A bat B et B bat C n'impliquent pas que A bat C. Petit tour à jouer en famille : laisse l'autre choisir son dé en premier, puis prends celui qui le bat. Tu gagneras 2 fois sur 3, quel que soit son choix.</p>
+  </div>
+  <p class="more">Dés inventés par le statisticien américain Bradley Efron (années 1960), rendus célèbres par Martin Gardner. <a href="https://en.wikipedia.org/wiki/Intransitive_dice" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="20" style="--c: var(--t-fait)" hidden>
+  <span class="tag">Fait peu connu</span>
+  <h2>Le tournesol sait compter</h2>
+  <p class="meta"><span>Suites · nature</span><span class="lvl">●○○○</span></p>
+  <div class="body">
+    <p>Regarde le cœur d'un tournesol : ses graines dessinent des <strong>spirales</strong>, les unes tournant à gauche, les autres à droite.</p>
+    <p>Si on les compte, on trouve très souvent <strong>34 et 55</strong>, parfois 21 et 34, ou 55 et 89. Sur une pomme de pin, on compte souvent 8 et 13. Ce sont des nombres de la suite de Fibonacci :</p>
+    <p style="text-align: center; font-family: var(--font-ui); font-weight: 700;">1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89…</p>
+    <p>Chaque nombre est la somme des deux précédents.</p>
+    <figure>
+      <svg viewBox="0 0 300 300" role="img" aria-label="150 points disposés comme des graines de tournesol, formant des spirales dans les deux sens">
+        <g class="f-blue">
+          <circle cx="142.3" cy="157.1" r="4.6"/><circle cx="151.3" cy="135.2" r="4.6"/><circle cx="161.1" cy="164.4" r="4.6"/><circle cx="129.3" cy="146.3" r="4.6"/><circle cx="169.8" cy="137.4" r="4.6"/><circle cx="143.3" cy="174.8" r="4.6"/><circle cx="137.2" cy="125.3" r="4.6"/><circle cx="177.9" cy="160.2" r="4.6"/><circle cx="120.9" cy="162.0" r="4.6"/><circle cx="164.1" cy="119.9" r="4.6"/><circle cx="160.4" cy="183.2" r="4.6"/><circle cx="118.5" cy="131.8" r="4.6"/><circle cx="187.0" cy="141.9" r="4.6"/><circle cx="127.4" cy="182.1" r="4.6"/><circle cx="144.8" cy="109.7" r="4.6"/><circle cx="182.1" cy="177.1" r="4.6"/><circle cx="106.7" cy="151.8" r="4.6"/><circle cx="181.6" cy="118.6" r="4.6"/><circle cx="147.9" cy="195.7" r="4.6"/><circle cx="119.9" cy="113.9" r="4.6"/><circle cx="197.7" cy="156.4" r="4.6"/><circle cx="109.6" cy="178.1" r="4.6"/><circle cx="161.1" cy="100.9" r="4.6"/><circle cx="175.6" cy="194.6" r="4.6"/><circle cx="100.0" cy="134.0" r="4.6"/><circle cx="198.6" cy="127.5" r="4.6"/><circle cx="128.9" cy="200.3" r="4.6"/><circle cx="131.2" cy="97.7" r="4.6"/><circle cx="200.0" cy="176.3" r="4.6"/><circle cx="94.4" cy="164.7" r="4.6"/><circle cx="181.6" cy="100.8" r="4.6"/><circle cx="160.1" cy="208.5" r="4.6"/><circle cx="102.3" cy="113.1" r="4.6"/><circle cx="211.0" cy="145.0" r="4.6"/><circle cx="107.8" cy="195.6" r="4.6"/><circle cx="150.3" cy="87.0" r="4.6"/><circle cx="192.9" cy="197.3" r="4.6"/><circle cx="85.6" cy="144.0" r="4.6"/><circle cx="202.2" cy="110.4" r="4.6"/><circle cx="138.1" cy="215.3" r="4.6"/><circle cx="114.2" cy="93.1" r="4.6"/><circle cx="215.6" cy="168.0" r="4.6"/><circle cx="88.7" cy="181.4" r="4.6"/><circle cx="174.2" cy="84.7" r="4.6"/><circle cx="176.5" cy="215.2" r="4.6"/><circle cx="85.7" cy="119.5" r="4.6"/><circle cx="218.8" cy="128.8" r="4.6"/><circle cx="113.2" cy="212.8" r="4.6"/><circle cx="134.6" cy="78.1" r="4.6"/><circle cx="210.5" cy="193.0" r="4.6"/><circle cx="75.6" cy="159.3" r="4.6"/><circle cx="199.1" cy="92.4" r="4.6"/><circle cx="152.8" cy="226.4" r="4.6"/><circle cx="95.9" cy="95.0" r="4.6"/><circle cx="227.8" cy="154.0" r="4.6"/><circle cx="89.4" cy="200.0" r="4.6"/><circle cx="161.0" cy="71.5" r="4.6"/><circle cx="195.3" cy="215.9" r="4.6"/><circle cx="71.4" cy="131.9" r="4.6"/><circle cx="220.8" cy="109.9" r="4.6"/><circle cx="124.7" cy="228.0" r="4.6"/><circle cx="115.7" cy="74.8" r="4.6"/><circle cx="226.7" cy="182.6" r="4.6"/><circle cx="70.8" cy="178.0" r="4.6"/><circle cx="189.8" cy="75.3" r="4.6"/><circle cx="171.3" cy="232.6" r="4.6"/><circle cx="77.9" cy="103.1" r="4.6"/><circle cx="235.4" cy="135.8" r="4.6"/><circle cx="96.2" cy="218.7" r="4.6"/><circle cx="143.2" cy="62.4" r="4.6"/><circle cx="214.6" cy="210.4" r="4.6"/><circle cx="60.9" cy="149.1" r="4.6"/><circle cx="216.8" cy="90.1" r="4.6"/><circle cx="141.2" cy="239.9" r="4.6"/><circle cx="95.4" cy="77.3" r="4.6"/><circle cx="240.0" cy="166.9" r="4.6"/><circle cx="71.8" cy="198.7" r="4.6"/><circle cx="175.0" cy="60.7" r="4.6"/><circle cx="192.2" cy="233.3" r="4.6"/><circle cx="62.1" cy="116.9" r="4.6"/><circle cx="237.7" cy="114.8" r="4.6"/><circle cx="108.8" cy="235.7" r="4.6"/><circle cx="122.3" cy="58.4" r="4.6"/><circle cx="232.8" cy="199.1" r="4.6"/><circle cx="55.2" cy="169.8" r="4.6"/><circle cx="206.8" cy="70.9" r="4.6"/><circle cx="161.6" cy="247.2" r="4.6"/><circle cx="75.3" cy="85.8" r="4.6"/><circle cx="249.0" cy="146.9" r="4.6"/><circle cx="78.7" cy="219.5" r="4.6"/><circle cx="155.6" cy="50.0" r="4.6"/><circle cx="213.7" cy="228.0" r="4.6"/><circle cx="49.8" cy="135.5" r="4.6"/><circle cx="234.1" cy="92.7" r="4.6"/><circle cx="126.5" cy="249.6" r="4.6"/><circle cx="99.8" cy="60.2" r="4.6"/><circle cx="248.2" cy="182.4" r="4.6"/><circle cx="55.2" cy="192.6" r="4.6"/><circle cx="191.3" cy="54.0" r="4.6"/><circle cx="184.5" cy="249.2" r="4.6"/><circle cx="57.1" cy="100.0" r="4.6"/><circle cx="252.8" cy="124.0" r="4.6"/><circle cx="91.5" cy="239.0" r="4.6"/><circle cx="132.9" cy="44.3" r="4.6"/><circle cx="234.4" cy="216.7" r="4.6"/><circle cx="42.2" cy="157.8" r="4.6"/><circle cx="224.6" cy="71.0" r="4.6"/><circle cx="148.4" cy="259.1" r="4.6"/><circle cx="77.2" cy="68.1" r="4.6"/><circle cx="259.5" cy="161.3" r="4.6"/><circle cx="61.2" cy="216.0" r="4.6"/><circle cx="171.0" cy="40.9" r="4.6"/><circle cx="208.5" cy="245.1" r="4.6"/><circle cx="42.2" cy="119.3" r="4.6"/><circle cx="250.7" cy="99.6" r="4.6"/><circle cx="109.6" cy="255.6" r="4.6"/><circle cx="108.3" cy="44.4" r="4.6"/><circle cx="252.6" cy="199.9" r="4.6"/><circle cx="40.2" cy="182.6" r="4.6"/><circle cx="209.2" cy="51.4" r="4.6"/><circle cx="173.1" cy="263.2" r="4.6"/><circle cx="56.1" cy="81.9" r="4.6"/><circle cx="265.7" cy="136.8" r="4.6"/><circle cx="73.3" cy="238.3" r="4.6"/><circle cx="146.9" cy="32.6" r="4.6"/><circle cx="231.9" cy="234.8" r="4.6"/><circle cx="31.9" cy="142.7" r="4.6"/><circle cx="242.4" cy="75.3" r="4.6"/><circle cx="132.3" cy="267.9" r="4.6"/><circle cx="83.1" cy="50.7" r="4.6"/><circle cx="266.8" cy="178.2" r="4.6"/><circle cx="44.4" cy="208.4" r="4.6"/><circle cx="188.6" cy="35.2" r="4.6"/><circle cx="199.3" cy="261.1" r="4.6"/><circle cx="38.2" cy="101.2" r="4.6"/><circle cx="265.8" cy="110.3" r="4.6"/><circle cx="91.2" cy="257.9" r="4.6"/><circle cx="120.4" cy="30.3" r="4.6"/><circle cx="253.1" cy="218.5" r="4.6"/><circle cx="27.3" cy="169.2" r="4.6"/><circle cx="227.8" cy="52.6" r="4.6"/><circle cx="158.4" cy="274.8" r="4.6"/><circle cx="59.1" cy="63.3" r="4.6"/><circle cx="276.0" cy="152.5" r="4.6"/><circle cx="55.1" cy="233.5" r="4.6"/><circle cx="163.6" cy="23.9" r="4.6"/><circle cx="225.4" cy="252.6" r="4.6"/><circle cx="24.7" cy="125.2" r="4.6"/><circle cx="259.5" cy="83.4" r="4.6"/><circle cx="114.1" cy="273.5" r="4.6"/>
+        </g>
+      </svg>
+      <figcaption>150 « graines » placées par ordinateur, chacune tournée de 137,5° par rapport à la précédente. Des spirales apparaissent dans les deux sens.</figcaption>
+    </figure>
+    <p class="question">Pourquoi la fleur « choisit »-elle ces nombres-là ?</p>
+  </div>
+  <button class="reveal" type="button">Voir l'explication</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Explication</p>
+    <p><span class="step">1.</span> Les graines naissent une par une au centre de la fleur, puis sont poussées vers l'extérieur. Chaque nouvelle graine apparaît en tournant d'un même angle par rapport à la précédente : environ <strong>137,5°</strong>.</p>
+    <p><span class="step">2.</span> Cet angle s'appelle l'<strong>angle d'or</strong>. On l'obtient en partageant le tour complet selon le nombre d'or $\varphi \approx 1{,}618$ :</p>
+    $$\frac{360^\circ}{\varphi^2} \approx 137{,}5^\circ$$
+    <p><span class="step">3.</span> Avec un angle « simple », comme 120° (un tiers de tour), les graines s'aligneraient sur 3 rayons droits et laisseraient de grands vides. L'angle d'or ne se répète jamais exactement : les graines remplissent la place <strong>sans laisser de trous</strong>.</p>
+    <p><span class="step">4.</span> Les quotients de deux nombres de Fibonacci qui se suivent se rapprochent du nombre d'or : $\frac{55}{34} \approx 1{,}6176$. C'est pour cela que les spirales qu'on voit se comptent en nombres de Fibonacci consécutifs.</p>
+    <p class="keep"><b>À retenir</b>La nature n'a pas appris la suite de Fibonacci : elle cherche simplement à ranger un maximum de graines dans un minimum de place. La règle n'est d'ailleurs pas absolue, et certains tournesols s'en écartent. Un bon prétexte pour aller compter les spirales d'une pomme de pin !</p>
+  </div>
+  <p class="more">Modèle mathématique du tournesol proposé par Helmut Vogel (1979). <a href="https://fr.wikipedia.org/wiki/Phyllotaxie" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="21" style="--c: var(--t-preuve)" hidden>
+  <span class="tag">Belle démonstration</span>
+  <h2>La somme des nombres impairs</h2>
+  <p class="meta"><span>Arithmétique · preuve visuelle</span><span class="lvl">●○○○</span></p>
+  <div class="body">
+    <p>Additionnons les premiers nombres impairs :</p>
+    <div class="chain">
+      <div><b>1 = 1</b><span>1 nombre</span></div>
+      <div><b>1 + 3 = 4</b><span>2 nombres</span></div>
+      <div><b>1 + 3 + 5 = 9</b><span>3 nombres</span></div>
+      <div><b>1 + 3 + 5 + 7 = 16</b><span>4 nombres</span></div>
+      <div class="end"><b>1 + 3 + 5 + 7 + 9 = 25</b><span>5 nombres</span></div>
+    </div>
+    <p>On obtient toujours un carré : 1, 4, 9, 16, 25…</p>
+    <p class="question">Pourquoi la somme des $n$ premiers nombres impairs vaut-elle toujours $n^2$ ? Un dessin suffit pour le prouver.</p>
+  </div>
+  <button class="reveal" type="button">Voir la démonstration</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Démonstration</p>
+    <figure>
+      <svg viewBox="0 0 240 240" role="img" aria-label="Carré de 5 sur 5 découpé en équerres emboîtées de 1, 3, 5, 7 et 9 cases">
+        <rect x="20" y="20" width="40" height="40" style="fill: var(--blue); stroke: var(--sheet)" stroke-width="2"/><rect x="60" y="20" width="40" height="40" style="fill: var(--blue-soft); stroke: var(--sheet)" stroke-width="2"/><rect x="100" y="20" width="40" height="40" style="fill: var(--blue); stroke: var(--sheet)" stroke-width="2"/><rect x="140" y="20" width="40" height="40" style="fill: var(--blue-soft); stroke: var(--sheet)" stroke-width="2"/><rect x="180" y="20" width="40" height="40" style="fill: var(--blue); stroke: var(--sheet)" stroke-width="2"/><rect x="20" y="60" width="40" height="40" style="fill: var(--blue-soft); stroke: var(--sheet)" stroke-width="2"/><rect x="60" y="60" width="40" height="40" style="fill: var(--blue-soft); stroke: var(--sheet)" stroke-width="2"/><rect x="100" y="60" width="40" height="40" style="fill: var(--blue); stroke: var(--sheet)" stroke-width="2"/><rect x="140" y="60" width="40" height="40" style="fill: var(--blue-soft); stroke: var(--sheet)" stroke-width="2"/><rect x="180" y="60" width="40" height="40" style="fill: var(--blue); stroke: var(--sheet)" stroke-width="2"/><rect x="20" y="100" width="40" height="40" style="fill: var(--blue); stroke: var(--sheet)" stroke-width="2"/><rect x="60" y="100" width="40" height="40" style="fill: var(--blue); stroke: var(--sheet)" stroke-width="2"/><rect x="100" y="100" width="40" height="40" style="fill: var(--blue); stroke: var(--sheet)" stroke-width="2"/><rect x="140" y="100" width="40" height="40" style="fill: var(--blue-soft); stroke: var(--sheet)" stroke-width="2"/><rect x="180" y="100" width="40" height="40" style="fill: var(--blue); stroke: var(--sheet)" stroke-width="2"/><rect x="20" y="140" width="40" height="40" style="fill: var(--blue-soft); stroke: var(--sheet)" stroke-width="2"/><rect x="60" y="140" width="40" height="40" style="fill: var(--blue-soft); stroke: var(--sheet)" stroke-width="2"/><rect x="100" y="140" width="40" height="40" style="fill: var(--blue-soft); stroke: var(--sheet)" stroke-width="2"/><rect x="140" y="140" width="40" height="40" style="fill: var(--blue-soft); stroke: var(--sheet)" stroke-width="2"/><rect x="180" y="140" width="40" height="40" style="fill: var(--blue); stroke: var(--sheet)" stroke-width="2"/><rect x="20" y="180" width="40" height="40" style="fill: var(--blue); stroke: var(--sheet)" stroke-width="2"/><rect x="60" y="180" width="40" height="40" style="fill: var(--blue); stroke: var(--sheet)" stroke-width="2"/><rect x="100" y="180" width="40" height="40" style="fill: var(--blue); stroke: var(--sheet)" stroke-width="2"/><rect x="140" y="180" width="40" height="40" style="fill: var(--blue); stroke: var(--sheet)" stroke-width="2"/><rect x="180" y="180" width="40" height="40" style="fill: var(--blue); stroke: var(--sheet)" stroke-width="2"/>
+        <g text-anchor="middle" font-size="17">
+          <text x="40" y="46" class="f-sheet">1</text><text x="80" y="86" class="f-blue">3</text><text x="120" y="126" class="f-sheet">5</text><text x="160" y="166" class="f-blue">7</text><text x="200" y="206" class="f-sheet">9</text>
+        </g>
+      </svg>
+      <figcaption>Chaque équerre, foncée ou claire, porte dans son coin le nombre de ses cases.</figcaption>
+    </figure>
+    <p><span class="step">1.</span> On part d'une case : c'est un carré de 1 sur 1.</p>
+    <p><span class="step">2.</span> Pour passer d'un carré de côté $k$ à un carré de côté $k + 1$, on ajoute une <strong>équerre</strong> : une ligne en bas et une colonne à droite. Elle compte $k + 1$ cases en bas, $k + 1$ à droite, et le coin est partagé : $2k + 1$ cases, un nombre impair.</p>
+    <p><span class="step">3.</span> Les équerres successives ont donc 1, 3, 5, 7, 9… cases. Après $n$ équerres, on a rempli un carré de $n$ sur $n$ :</p>
+    $$1 + 3 + 5 + \cdots + (2n - 1) = n^2 \qquad \blacksquare$$
+    <p><span class="step">4.</span> En calcul, on retrouve la même idée : $(k+1)^2 - k^2 = 2k + 1$.</p>
+    <p class="keep"><b>À retenir</b>Les pythagoriciens représentaient les nombres par des cailloux disposés en figures. Ce dessin vient de cette tradition : il démontre sans aucun calcul, et un élève de 6<sup>e</sup> peut le comprendre.</p>
+  </div>
+  <p class="more">Résultat connu depuis l'Antiquité grecque, dans la tradition des « nombres figurés » des pythagoriciens.</p>
+</article>
+
+<article class="card" data-n="22" style="--c: var(--t-paradoxe)" hidden>
+  <span class="tag">Paradoxe</span>
+  <h2>0,999… est-il égal à 1 ?</h2>
+  <p class="meta"><span>Nombres décimaux</span><span class="lvl">●○○○</span></p>
+  <div class="body">
+    <p>On écrit 0,999… avec une infinité de 9 après la virgule. Beaucoup d'élèves, et pas mal d'adultes, sont sûrs qu'il est « juste un tout petit peu plus petit que 1 ».</p>
+    <figure>
+      <svg viewBox="0 0 320 210" role="img" aria-label="Trois segments agrandis : à chaque nouveau 9, l'écart restant avant 1 est divisé par 10">
+        <g class="s-ink" stroke-width="2" fill="none">
+          <line x1="30" y1="40" x2="290" y2="40"/>
+          <line x1="30" y1="110" x2="290" y2="110"/>
+          <line x1="30" y1="180" x2="290" y2="180"/>
+        </g>
+        <g class="s-soft" stroke-width="1" stroke-dasharray="3 3" fill="none">
+          <line x1="264" y1="46" x2="30" y2="104"/>
+          <line x1="290" y1="46" x2="290" y2="104"/>
+          <line x1="264" y1="116" x2="30" y2="174"/>
+          <line x1="290" y1="116" x2="290" y2="174"/>
+        </g>
+        <g class="s-red" stroke-width="5" fill="none">
+          <line x1="264" y1="40" x2="290" y2="40"/>
+          <line x1="264" y1="110" x2="290" y2="110"/>
+          <line x1="264" y1="180" x2="290" y2="180"/>
+        </g>
+        <g class="s-ink" stroke-width="2">
+          <line x1="30" y1="33" x2="30" y2="47"/><line x1="290" y1="33" x2="290" y2="47"/><line x1="264" y1="33" x2="264" y2="47"/>
+          <line x1="30" y1="103" x2="30" y2="117"/><line x1="290" y1="103" x2="290" y2="117"/><line x1="264" y1="103" x2="264" y2="117"/>
+          <line x1="30" y1="173" x2="30" y2="187"/><line x1="290" y1="173" x2="290" y2="187"/><line x1="264" y1="173" x2="264" y2="187"/>
+        </g>
+        <g class="f-ink" font-size="12" text-anchor="middle">
+          <text x="30" y="26">0</text><text x="290" y="26">1</text><text x="258" y="26">0,9</text>
+          <text x="30" y="96">0,9</text><text x="290" y="96">1</text><text x="254" y="96">0,99</text>
+          <text x="30" y="166">0,99</text><text x="290" y="166">1</text><text x="252" y="166">0,999</text>
+        </g>
+        <g class="f-red" font-size="12" text-anchor="end">
+          <text x="290" y="62">reste 0,1</text>
+          <text x="290" y="132">reste 0,01</text>
+          <text x="290" y="202">reste 0,001</text>
+        </g>
+      </svg>
+      <figcaption>À chaque 9 ajouté, on agrandit 10 fois le dernier morceau. L'écart restant est divisé par 10.</figcaption>
+    </figure>
+    <p class="question">Avec une infinité de 9, reste-t-il un écart entre 0,999… et 1 ?</p>
+  </div>
+  <button class="reveal" type="button">Voir l'explication</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Explication</p>
+    <p><strong>Non : 0,999… = 1 exactement.</strong> Ce sont deux écritures du même nombre. Voici trois façons de s'en convaincre.</p>
+    <p><span class="step">1. Avec un tiers.</span> On sait que $\tfrac13 = 0{,}333\ldots$ On multiplie par 3 des deux côtés : $1 = 0{,}999\ldots$</p>
+    <p><span class="step">2. Avec un petit calcul.</span> Appelons $x = 0{,}999\ldots$ Alors $10x = 9{,}999\ldots$ On soustrait :</p>
+    $$10x - x = 9{,}999\ldots - 0{,}999\ldots = 9$$
+    <p>Donc $9x = 9$, et $x = 1$.</p>
+    <p><span class="step">3. Avec l'écart.</span> Si 0,999… et 1 étaient différents, il y aurait un écart entre les deux. Mais cet écart est plus petit que 0,1, que 0,01, que 0,001… Il est plus petit que n'importe quel nombre positif. Le seul nombre qui vérifie ça, c'est 0.</p>
+    <p class="keep"><b>À retenir</b>Un même nombre peut avoir deux écritures décimales. C'est le cas de tous les décimaux : 2,5 = 2,4999… De même, 0,999… ne « s'approche » pas de 1 : il est déjà égal à 1.</p>
+  </div>
+  <p class="more">Question classique de l'enseignement des décimaux. <a href="https://fr.wikipedia.org/wiki/D%C3%A9veloppement_d%C3%A9cimal_de_l%27unit%C3%A9" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="23" style="--c: var(--t-probleme)" hidden>
+  <span class="tag">Problème · défi</span>
+  <h2>Les chapeaux noirs et blancs</h2>
+  <p class="meta"><span>Logique · parité</span><span class="lvl">●●●○</span></p>
+  <div class="body">
+    <p>100 prisonniers sont placés en file indienne. On pose sur la tête de chacun un chapeau <strong>noir</strong> ou <strong>blanc</strong>, au hasard. Personne ne voit son propre chapeau.</p>
+    <p>Chacun voit <strong>tous les chapeaux devant lui</strong>, mais aucun derrière lui.</p>
+    <p>En commençant par le dernier de la file, chacun dit à voix haute un seul mot : « noir » ou « blanc ». Tout le monde entend. Celui qui annonce la couleur de son propre chapeau est libéré.</p>
+    <figure>
+      <svg viewBox="0 0 320 170" role="img" aria-label="Six prisonniers en file. Le dernier, à gauche, ne connaît pas son chapeau et dit noir. Devant lui : noir, blanc, noir, noir, blanc">
+        <defs>
+          <marker id="arr-23" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" style="fill: var(--ink-soft)"/>
+          </marker>
+        </defs>
+        <rect x="6" y="6" width="58" height="26" rx="8" class="f-sheet s-red" stroke-width="2"/>
+        <path d="M28 32 L35 44 L40 32 z" class="f-sheet s-red" stroke-width="2" stroke-linejoin="round"/>
+        <rect x="27" y="30" width="15" height="4" class="f-sheet"/>
+        <text x="35" y="24" text-anchor="middle" class="f-red" font-size="13">« Noir »</text>
+        <g class="f-blue-soft s-blue" stroke-width="2">
+          <circle cx="35" cy="86" r="13"/><circle cx="85" cy="86" r="13"/><circle cx="135" cy="86" r="13"/>
+          <circle cx="185" cy="86" r="13"/><circle cx="235" cy="86" r="13"/><circle cx="285" cy="86" r="13"/>
+          <rect x="22" y="102" width="26" height="34" rx="8"/><rect x="72" y="102" width="26" height="34" rx="8"/>
+          <rect x="122" y="102" width="26" height="34" rx="8"/><rect x="172" y="102" width="26" height="34" rx="8"/>
+          <rect x="222" y="102" width="26" height="34" rx="8"/><rect x="272" y="102" width="26" height="34" rx="8"/>
+        </g>
+        <rect x="22" y="57" width="26" height="16" rx="3" class="f-sheet s-soft" stroke-width="2" stroke-dasharray="3 3"/>
+        <text x="35" y="70" text-anchor="middle" class="f-soft" font-size="13">?</text>
+        <g class="s-ink" stroke-width="2">
+          <rect x="72" y="57" width="26" height="16" rx="3" class="f-ink"/>
+          <rect x="122" y="57" width="26" height="16" rx="3" class="f-sheet"/>
+          <rect x="172" y="57" width="26" height="16" rx="3" class="f-ink"/>
+          <rect x="222" y="57" width="26" height="16" rx="3" class="f-ink"/>
+          <rect x="272" y="57" width="26" height="16" rx="3" class="f-sheet"/>
+        </g>
+        <g class="f-soft" font-size="11" text-anchor="middle">
+          <text x="35" y="152">dernier</text><text x="285" y="152">premier</text>
+        </g>
+        <line x1="90" y1="160" x2="240" y2="160" class="s-soft" stroke-width="1.5" marker-end="url(#arr-23)"/>
+        <text x="165" y="154" text-anchor="middle" class="f-soft" font-size="11">tous regardent vers l'avant</text>
+      </svg>
+      <figcaption>Un exemple avec 6 prisonniers. Le dernier voit les 5 chapeaux devant lui.</figcaption>
+    </figure>
+    <p>Au hasard, chacun a une chance sur deux. Ils peuvent se mettre d'accord sur une méthode avant.</p>
+    <p class="question">Trouve une méthode qui sauve à coup sûr au moins 99 prisonniers sur 100.</p>
+    <details class="hint">
+      <summary>Un indice</summary>
+      <p>Le dernier n'a aucune information sur son chapeau. Il peut sacrifier sa chance pour donner un renseignement utile à tous les autres : pair ou impair ?</p>
+    </details>
+  </div>
+  <button class="reveal" type="button">Voir la solution</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Solution</p>
+    <p><span class="step">1. Le code.</span> Le dernier compte les chapeaux <strong>noirs</strong> qu'il voit. S'il en voit un nombre <strong>impair</strong>, il dit « noir ». S'il en voit un nombre pair, il dit « blanc ». Lui a une chance sur deux d'être libéré.</p>
+    <p><span class="step">2. Sur l'exemple.</span> Le dernier voit noir, blanc, noir, noir, blanc : 3 noirs, c'est impair. Il dit « noir ».</p>
+    <p><span class="step">3. Le suivant.</span> Il voit devant lui blanc, noir, noir, blanc : 2 noirs, c'est pair. Or le dernier en voyait un nombre impair. La différence vient forcément de son propre chapeau : <strong>il est noir</strong>. Il le dit, il a raison.</p>
+    <p><span class="step">4. Et ainsi de suite.</span> Chacun connaît la parité annoncée au départ, entend les couleurs dites derrière lui et voit les chapeaux devant lui. Il ne lui manque qu'un chapeau, le sien, et la parité le donne.</p>
+    <p>Le troisième, par exemple, sait que le dernier voyait 3 noirs. Il a entendu un « noir » juste derrière lui et voit 2 noirs devant lui : 1 + 2 = 3. Son chapeau n'ajoute rien, donc <strong>il est blanc</strong>.</p>
+    <p><span class="step">5. Bilan.</span> Les 99 premiers de la file sont sûrs d'être libérés. Le dernier l'est une fois sur deux.</p>
+    <p class="keep"><b>À retenir</b>Une seule information bien choisie, la parité, suffit à tout reconstituer. C'est la même idée que le « bit de parité » qui protège les données dans les ordinateurs.</p>
+  </div>
+  <p class="more">Énigme classique de logique, souvent posée en entretien d'embauche. <a href="https://en.wikipedia.org/wiki/Prisoners_and_hats_puzzle" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="24" style="--c: var(--t-fait)" hidden>
+  <span class="tag">Fait peu connu</span>
+  <h2>220 et 284, les nombres amis</h2>
+  <p class="meta"><span>Arithmétique · diviseurs</span><span class="lvl">●○○○</span></p>
+  <div class="body">
+    <p>Prenons les <strong>diviseurs propres</strong> d'un nombre, c'est-à-dire tous ses diviseurs sauf lui-même, et additionnons-les.</p>
+    <div class="tablebox">
+      <table class="simpson">
+        <thead><tr><th>Nombre</th><th>Diviseurs propres</th><th>Somme</th></tr></thead>
+        <tbody>
+          <tr><td><b>220</b></td><td>1, 2, 4, 5, 10, 11, 20, 22, 44, 55, 110</td><td class="win">284</td></tr>
+          <tr><td><b>284</b></td><td>1, 2, 4, 71, 142</td><td class="win">220</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Les diviseurs de 220 ont pour somme 284, et ceux de 284 ont pour somme 220. Chacun « fabrique » l'autre. On les appelle des <strong>nombres amicaux</strong>.</p>
+    <p>Les pythagoriciens les connaissaient déjà. On raconte que Pythagore, à qui l'on demandait ce qu'est un ami, aurait répondu : « Un autre moi-même, comme 220 et 284. »</p>
+    <p class="question">Existe-t-il d'autres paires ? Et comment en trouver ?</p>
+  </div>
+  <button class="reveal" type="button">Voir la suite de l'histoire</button>
+  <div class="solution" hidden>
+    <p class="solution-label">La suite de l'histoire</p>
+    <p><span class="step">1. Une recette arabe.</span> Au IXe siècle, à Bagdad, Thâbit ibn Qurra trouve une règle. On prend un entier $n$ et on calcule trois nombres :</p>
+    $$p = 3 \times 2^{n-1} - 1, \quad q = 3 \times 2^{n} - 1, \quad r = 9 \times 2^{2n-1} - 1$$
+    <p>Si $p$, $q$ et $r$ sont tous premiers, alors $2^n \times p \times q$ et $2^n \times r$ sont amicaux.</p>
+    <p><span class="step">2. Vérification.</span> Pour $n = 2$ : $p = 5$, $q = 11$, $r = 71$. On obtient $4 \times 5 \times 11 = 220$ et $4 \times 71 = 284$. On retrouve la paire de Pythagore.</p>
+    <p><span class="step">3. Fermat, 1636.</span> Pour $n = 4$ : $p = 23$, $q = 47$, $r = 1151$, tous premiers. La règle donne <strong>17 296 et 18 416</strong>. Fermat annonce cette paire en 1636, et Descartes en trouve une troisième deux ans plus tard.</p>
+    <p><span class="step">4. Le jeune Paganini.</span> Euler en trouve une soixantaine vers 1750. Mais il rate une paire toute petite : <strong>1184 et 1210</strong>. C'est un Italien de 16 ans, Nicolò Paganini, qui la découvre en 1866.</p>
+    <p class="keep"><b>À retenir</b>On connaît aujourd'hui des milliards de paires amicales. Mais on ne sait toujours pas prouver qu'il y en a une infinité, ni s'il existe une paire avec un nombre pair et un nombre impair.</p>
+  </div>
+  <p class="more">Thâbit ibn Qurra (IXe siècle), Fermat (1636), Euler (1750), N. Paganini (1866). <a href="https://fr.wikipedia.org/wiki/Nombres_amicaux" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="25" style="--c: var(--t-preuve)" hidden>
+  <span class="tag">Belle démonstration</span>
+  <h2>Les lunules d'Hippocrate</h2>
+  <p class="meta"><span>Géométrie · aires</span><span class="lvl">●●○○</span></p>
+  <div class="body">
+    <p>Depuis l'Antiquité, on cherche à « carrer le cercle » : construire un carré de même aire qu'un disque. C'est impossible, on le sait depuis 1882. Mais vers 440 avant J.-C., Hippocrate de Chios réussit quelque chose d'étonnant avec des morceaux de cercles.</p>
+    <p>On trace un demi-cercle de diamètre $AB$, et le triangle $ABC$ rectangle et isocèle en $C$. Sur les côtés $AC$ et $BC$, on trace deux petits demi-cercles vers l'extérieur.</p>
+    <figure>
+      <svg viewBox="0 15 320 180" role="img" aria-label="Un grand demi-cercle de diamètre AB, le triangle ABC à l'intérieur, et deux lunules rouges en forme de croissant sur les côtés AC et BC">
+        <path d="M40 170 A84.85 84.85 0 0 1 160 50 A120 120 0 0 0 40 170 z" style="fill: var(--red-soft)" class="s-red" stroke-width="2"/>
+        <path d="M280 170 A84.85 84.85 0 0 0 160 50 A120 120 0 0 1 280 170 z" style="fill: var(--red-soft)" class="s-red" stroke-width="2"/>
+        <path d="M40 170 L280 170 L160 50 z" class="f-blue-soft s-blue" stroke-width="2"/>
+        <path d="M40 170 A120 120 0 0 1 280 170" class="f-none s-soft" stroke-width="1.5" stroke-dasharray="4 4"/>
+        <path d="M152 50 L152 58 L160 66 L168 58 L168 50" class="f-none s-blue" stroke-width="1.2"/>
+        <g class="f-ink" font-size="14" text-anchor="middle">
+          <text x="32" y="188">A</text><text x="288" y="188">B</text><text x="160" y="86">C</text>
+        </g>
+        <text x="160" y="150" text-anchor="middle" class="f-blue" font-size="13">triangle</text>
+        <text x="62" y="78" text-anchor="middle" class="f-red" font-size="13">lunule</text>
+        <text x="258" y="78" text-anchor="middle" class="f-red" font-size="13">lunule</text>
+      </svg>
+      <figcaption>Les deux croissants rouges s'appellent des lunules. Le grand demi-cercle est en pointillé.</figcaption>
+    </figure>
+    <p class="question">Montre que les deux lunules rouges ont, ensemble, exactement la même aire que le triangle bleu.</p>
+    <details class="hint">
+      <summary>Un indice</summary>
+      <p>Compare l'aire des deux petits demi-cercles avec celle du grand. Pythagore n'est pas loin.</p>
+    </details>
+  </div>
+  <button class="reveal" type="button">Voir la démonstration</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Démonstration</p>
+    <p><span class="step">1.</span> Un demi-cercle de diamètre $d$ a pour aire $\dfrac{\pi d^2}{8}$. Les deux petits ont pour diamètres $AC$ et $BC$, le grand a pour diamètre $AB$.</p>
+    <p><span class="step">2.</span> Le triangle est rectangle en $C$. D'après Pythagore, $AC^2 + BC^2 = AB^2$. On multiplie par $\dfrac{\pi}{8}$ :</p>
+    $$\text{petit demi-cercle} + \text{petit demi-cercle} = \text{grand demi-cercle}$$
+    <p><span class="step">3.</span> Regardons ce que couvre chaque côté de cette égalité :</p>
+    <ul>
+      <li>les deux petits demi-cercles couvrent les <strong>deux lunules</strong> et les deux bandes situées entre le triangle et le grand cercle ;</li>
+      <li>le grand demi-cercle couvre le <strong>triangle</strong> et ces deux mêmes bandes.</li>
+    </ul>
+    <p><span class="step">4.</span> On retire les deux bandes des deux côtés. Il reste :</p>
+    $$\text{lunule} + \text{lunule} = \text{triangle} \qquad \blacksquare$$
+    <p class="keep"><b>À retenir</b>C'est la plus ancienne aire exacte d'une figure courbe qu'on connaisse : une surface délimitée par des arcs de cercle, qui vaut exactement l'aire d'un triangle, sans aucun $\pi$ dans le résultat.</p>
+  </div>
+  <p class="more">Hippocrate de Chios (vers 440 av. J.-C.), rapporté par Eudème puis Simplicius. <a href="https://fr.wikipedia.org/wiki/Lunule" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="26" style="--c: var(--t-paradoxe)" hidden>
+  <span class="tag">Paradoxe</span>
+  <h2>L'hôtel de Hilbert, toujours complet</h2>
+  <p class="meta"><span>Infini · logique</span><span class="lvl">●●○○</span></p>
+  <div class="body">
+    <p>Imagine un hôtel avec une <strong>infinité de chambres</strong>, numérotées 1, 2, 3, 4… Ce soir, toutes les chambres sont occupées. L'hôtel est complet.</p>
+    <figure>
+      <svg viewBox="0 20 320 90" role="img" aria-label="Une rangée de chambres numérotées de 1 à 6, toutes occupées, et des points de suspension">
+        <g class="f-blue-soft s-blue" stroke-width="2">
+          <rect x="20" y="40" width="36" height="36" rx="4"/><rect x="68" y="40" width="36" height="36" rx="4"/>
+          <rect x="116" y="40" width="36" height="36" rx="4"/><rect x="164" y="40" width="36" height="36" rx="4"/>
+          <rect x="212" y="40" width="36" height="36" rx="4"/><rect x="260" y="40" width="36" height="36" rx="4"/>
+        </g>
+        <g class="f-blue" font-size="14" text-anchor="middle">
+          <text x="38" y="63">1</text><text x="86" y="63">2</text><text x="134" y="63">3</text>
+          <text x="182" y="63">4</text><text x="230" y="63">5</text><text x="278" y="63">6</text>
+        </g>
+        <text x="306" y="63" class="f-soft" font-size="14">…</text>
+        <text x="160" y="98" text-anchor="middle" class="f-red" font-size="13">COMPLET</text>
+      </svg>
+    </figure>
+    <p>Un nouveau client arrive. Puis, plus tard, un car avec une <strong>infinité</strong> de passagers, numérotés 1, 2, 3…</p>
+    <p class="question">Peut-on loger le nouveau client ? Et tous les passagers du car, sans mettre personne dehors ?</p>
+  </div>
+  <button class="reveal" type="button">Voir l'explication</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Explication</p>
+    <p><span class="step">1. Un client de plus.</span> Le gérant demande à chaque client de passer à la chambre suivante : celui de la chambre $n$ va dans la chambre $n + 1$. Tout le monde a encore une chambre, et la chambre 1 est libre.</p>
+    <figure>
+      <svg viewBox="0 10 320 95" role="img" aria-label="Chaque client passe de la chambre n à la chambre n plus 1, la chambre 1 devient libre">
+        <defs>
+          <marker id="arr-26a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" style="fill: var(--red)"/>
+          </marker>
+        </defs>
+        <g class="s-red" stroke-width="2" fill="none" marker-end="url(#arr-26a)">
+          <path d="M44 58 Q62 30 80 58"/><path d="M92 58 Q110 30 128 58"/><path d="M140 58 Q158 30 176 58"/>
+          <path d="M188 58 Q206 30 224 58"/><path d="M236 58 Q254 30 272 58"/>
+        </g>
+        <rect x="20" y="60" width="36" height="36" rx="4" style="fill: var(--green-soft); stroke: var(--green)" stroke-width="2"/>
+        <g class="f-blue-soft s-blue" stroke-width="2">
+          <rect x="68" y="60" width="36" height="36" rx="4"/><rect x="116" y="60" width="36" height="36" rx="4"/>
+          <rect x="164" y="60" width="36" height="36" rx="4"/><rect x="212" y="60" width="36" height="36" rx="4"/>
+          <rect x="260" y="60" width="36" height="36" rx="4"/>
+        </g>
+        <g class="f-blue" font-size="14" text-anchor="middle">
+          <text x="86" y="83">2</text><text x="134" y="83">3</text><text x="182" y="83">4</text>
+          <text x="230" y="83">5</text><text x="278" y="83">6</text>
+        </g>
+        <text x="38" y="83" text-anchor="middle" style="fill: var(--green)" font-size="14">1</text>
+        <text x="38" y="26" text-anchor="middle" style="fill: var(--green)" font-size="11">libre !</text>
+        <text x="306" y="83" class="f-soft" font-size="14">…</text>
+      </svg>
+    </figure>
+    <p><span class="step">2. Une infinité de clients.</span> Cette fois, celui de la chambre $n$ va dans la chambre $2n$ : 1 va en 2, 2 va en 4, 3 va en 6… Tous les clients sont maintenant dans les chambres paires.</p>
+    <figure>
+      <svg viewBox="0 -30 320 135" role="img" aria-label="Chaque client passe de la chambre n à la chambre 2n, les chambres impaires 1, 3 et 5 deviennent libres">
+        <defs>
+          <marker id="arr-26b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" style="fill: var(--red)"/>
+          </marker>
+        </defs>
+        <g class="s-red" stroke-width="2" fill="none" marker-end="url(#arr-26b)">
+          <path d="M42 58 Q62 30 82 58"/>
+          <path d="M90 58 Q136 0 180 58"/>
+          <path d="M138 58 Q208 -30 276 58"/>
+        </g>
+        <g style="fill: var(--green-soft); stroke: var(--green)" stroke-width="2">
+          <rect x="20" y="60" width="36" height="36" rx="4"/><rect x="116" y="60" width="36" height="36" rx="4"/><rect x="212" y="60" width="36" height="36" rx="4"/>
+        </g>
+        <g class="f-blue-soft s-blue" stroke-width="2">
+          <rect x="68" y="60" width="36" height="36" rx="4"/><rect x="164" y="60" width="36" height="36" rx="4"/><rect x="260" y="60" width="36" height="36" rx="4"/>
+        </g>
+        <g font-size="14" text-anchor="middle">
+          <text x="38" y="83" style="fill: var(--green)">1</text><text x="86" y="83" class="f-blue">2</text>
+          <text x="134" y="83" style="fill: var(--green)">3</text><text x="182" y="83" class="f-blue">4</text>
+          <text x="230" y="83" style="fill: var(--green)">5</text><text x="278" y="83" class="f-blue">6</text>
+        </g>
+        <text x="306" y="83" class="f-soft" font-size="14">…</text>
+      </svg>
+      <figcaption>En vert : les chambres impaires, qui deviennent toutes libres.</figcaption>
+    </figure>
+    <p><span class="step">3.</span> Toutes les chambres impaires (1, 3, 5, 7…) sont libres, et il y en a une infinité. Le passager $k$ du car prend la chambre $2k - 1$.</p>
+    <p class="keep"><b>À retenir</b>Avec l'infini, « plein » ne veut plus dire « plus de place ». Une partie d'un ensemble infini peut être aussi grande que l'ensemble tout entier : il y a autant de nombres pairs que de nombres entiers.</p>
+  </div>
+  <p class="more">Imaginé par David Hilbert lors d'une conférence en 1924, rendu célèbre par George Gamow. <a href="https://fr.wikipedia.org/wiki/H%C3%B4tel_de_Hilbert" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="27" style="--c: var(--t-fait)" hidden>
+  <span class="tag">Fait peu connu</span>
+  <h2>Pourquoi les abeilles font des hexagones</h2>
+  <p class="meta"><span>Géométrie · pavages</span><span class="lvl">●●○○</span></p>
+  <div class="body">
+    <p>Les alvéoles des ruches sont des hexagones presque parfaits. Les abeilles n'ont pas appris la géométrie. Pourtant, elles ont choisi la meilleure forme.</p>
+    <p>Pour construire des alvéoles toutes pareilles, sans trou, il faut une forme qui <strong>pave le plan</strong>. Parmi les polygones réguliers, seuls trois y arrivent :</p>
+    <figure>
+      <svg viewBox="0 0 330 135" role="img" aria-label="Trois pavages : des triangles équilatéraux, des carrés et des hexagones réguliers">
+        <defs>
+          <clipPath id="clip-27"><rect x="0" y="0" width="84" height="97"/></clipPath>
+        </defs>
+        <g transform="translate(14,6)">
+          <rect x="0" y="0" width="84" height="97" class="f-blue-soft"/>
+          <g clip-path="url(#clip-27)" class="s-blue" stroke-width="1.5" fill="none">
+            <line x1="0" y1="0" x2="84" y2="0"/><line x1="0" y1="24.25" x2="84" y2="24.25"/><line x1="0" y1="48.5" x2="84" y2="48.5"/><line x1="0" y1="72.75" x2="84" y2="72.75"/><line x1="0" y1="97" x2="84" y2="97"/>
+            <line x1="-56" y1="0" x2="0" y2="97"/><line x1="-28" y1="0" x2="28" y2="97"/><line x1="0" y1="0" x2="56" y2="97"/><line x1="28" y1="0" x2="84" y2="97"/><line x1="56" y1="0" x2="112" y2="97"/><line x1="84" y1="0" x2="140" y2="97"/>
+            <line x1="0" y1="0" x2="-56" y2="97"/><line x1="28" y1="0" x2="-28" y2="97"/><line x1="56" y1="0" x2="0" y2="97"/><line x1="84" y1="0" x2="28" y2="97"/><line x1="112" y1="0" x2="56" y2="97"/><line x1="140" y1="0" x2="84" y2="97"/>
+          </g>
+        </g>
+        <g transform="translate(123,12)">
+          <rect x="0" y="0" width="84" height="84" class="f-blue-soft s-blue" stroke-width="1.5"/>
+          <g class="s-blue" stroke-width="1.5" fill="none">
+            <line x1="28" y1="0" x2="28" y2="84"/><line x1="56" y1="0" x2="56" y2="84"/>
+            <line x1="0" y1="28" x2="84" y2="28"/><line x1="0" y1="56" x2="84" y2="56"/>
+          </g>
+        </g>
+        <g transform="translate(220,8)" style="fill: var(--green-soft); stroke: var(--green)" stroke-width="1.5">
+          <polygon points="36.2,21.0 24.1,28.0 12.0,21.0 12.0,7.0 24.1,0.0 36.2,7.0"/>
+          <polygon points="60.5,21.0 48.4,28.0 36.2,21.0 36.2,7.0 48.4,0.0 60.5,7.0"/>
+          <polygon points="84.7,21.0 72.6,28.0 60.5,21.0 60.5,7.0 72.6,0.0 84.7,7.0"/>
+          <polygon points="48.4,42.0 36.2,49.0 24.1,42.0 24.1,28.0 36.2,21.0 48.4,28.0"/>
+          <polygon points="72.6,42.0 60.5,49.0 48.4,42.0 48.4,28.0 60.5,21.0 72.6,28.0"/>
+          <polygon points="96.9,42.0 84.7,49.0 72.6,42.0 72.6,28.0 84.7,21.0 96.9,28.0"/>
+          <polygon points="36.2,63.0 24.1,70.0 12.0,63.0 12.0,49.0 24.1,42.0 36.2,49.0"/>
+          <polygon points="60.5,63.0 48.4,70.0 36.2,63.0 36.2,49.0 48.4,42.0 60.5,49.0"/>
+          <polygon points="84.7,63.0 72.6,70.0 60.5,63.0 60.5,49.0 72.6,42.0 84.7,49.0"/>
+          <polygon points="48.4,84.0 36.2,91.0 24.1,84.0 24.1,70.0 36.2,63.0 48.4,70.0"/>
+          <polygon points="72.6,84.0 60.5,91.0 48.4,84.0 48.4,70.0 60.5,63.0 72.6,70.0"/>
+          <polygon points="96.9,84.0 84.7,91.0 72.6,84.0 72.6,70.0 84.7,63.0 96.9,70.0"/>
+        </g>
+        <g class="f-ink" font-size="12" text-anchor="middle">
+          <text x="56" y="124">triangles</text><text x="165" y="124">carrés</text><text x="274" y="124">hexagones</text>
+        </g>
+      </svg>
+    </figure>
+    <p class="question">Pourquoi seulement ces trois-là ? Et pourquoi l'hexagone est-il le meilleur choix pour l'abeille ?</p>
+  </div>
+  <button class="reveal" type="button">Voir l'explication</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Explication</p>
+    <p><span class="step">1. Seulement trois formes.</span> Autour d'un sommet, les angles des polygones doivent faire exactement 360°. Il faut donc que l'angle du polygone divise 360 :</p>
+    <ul>
+      <li>triangle : 60°, et 6 × 60 = 360 ✓</li>
+      <li>carré : 90°, et 4 × 90 = 360 ✓</li>
+      <li>pentagone : 108°, et 360 ÷ 108 n'est pas entier ✗</li>
+      <li>hexagone : 120°, et 3 × 120 = 360 ✓</li>
+      <li>au-delà, l'angle est compris entre 120° et 180° : il en faudrait plus de 2 et moins de 3 ✗</li>
+    </ul>
+    <p><span class="step">2. Le moins de cire.</span> La cire coûte cher à l'abeille : elle doit manger plusieurs grammes de miel pour en fabriquer 1 g. Elle a donc intérêt à faire les murs les plus courts possible. Comparons le périmètre des trois formes pour une même aire de 1 cm² :</p>
+    <div class="tablebox">
+      <table class="simpson">
+        <thead><tr><th>Forme</th><th>Périmètre pour 1 cm²</th></tr></thead>
+        <tbody>
+          <tr><td>Triangle équilatéral</td><td>4,56 cm</td></tr>
+          <tr><td>Carré</td><td>4 cm</td></tr>
+          <tr><td>Hexagone régulier</td><td class="win">3,72 cm</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><span class="step">3. Le meilleur de tous.</span> L'hexagone bat aussi toutes les autres formes, même irrégulières ou courbes. Pappus d'Alexandrie le soupçonnait au IVe siècle. Il a fallu attendre 1999 pour que l'Américain Thomas Hales le démontre : c'est la « conjecture du nid d'abeille ».</p>
+    <p class="keep"><b>À retenir</b>L'hexagone est le polygone le plus « rond » qui pave encore le plan. C'est le meilleur compromis entre ne laisser aucun trou et utiliser le moins de mur possible.</p>
+  </div>
+  <p class="more">Pappus d'Alexandrie (IVe siècle) ; T. C. Hales, « The Honeycomb Conjecture » (1999, publié en 2001). <a href="https://en.wikipedia.org/wiki/Honeycomb_conjecture" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="28" style="--c: var(--t-paradoxe)" hidden>
+  <span class="tag">Paradoxe</span>
+  <h2>1, 2, 4, 8, 16… 31 ?</h2>
+  <p class="meta"><span>Géométrie · dénombrement</span><span class="lvl">●●○○</span></p>
+  <div class="body">
+    <p>On place des points sur un cercle et on les relie tous entre eux par des segments. On choisit les points pour que jamais trois segments ne se croisent au même endroit. Puis on compte les régions du disque.</p>
+    <figure>
+      <svg viewBox="0 10 300 215" role="img" aria-label="Un cercle avec 5 points reliés deux à deux par 10 segments, qui découpent le disque en 16 régions">
+        <circle cx="150" cy="125" r="100" class="f-blue-soft s-blue" stroke-width="2"/>
+        <g class="s-blue" stroke-width="1.6">
+          <line x1="150" y1="25" x2="245.1" y2="94.1"/><line x1="150" y1="25" x2="208.8" y2="205.9"/>
+          <line x1="150" y1="25" x2="91.2" y2="205.9"/><line x1="150" y1="25" x2="54.9" y2="94.1"/>
+          <line x1="245.1" y1="94.1" x2="208.8" y2="205.9"/><line x1="245.1" y1="94.1" x2="91.2" y2="205.9"/>
+          <line x1="245.1" y1="94.1" x2="54.9" y2="94.1"/><line x1="208.8" y1="205.9" x2="91.2" y2="205.9"/>
+          <line x1="208.8" y1="205.9" x2="54.9" y2="94.1"/><line x1="91.2" y1="205.9" x2="54.9" y2="94.1"/>
+        </g>
+        <g class="f-red">
+          <circle cx="150" cy="25" r="5"/><circle cx="245.1" cy="94.1" r="5"/><circle cx="208.8" cy="205.9" r="5"/>
+          <circle cx="91.2" cy="205.9" r="5"/><circle cx="54.9" cy="94.1" r="5"/>
+        </g>
+      </svg>
+      <figcaption>Avec 5 points, on obtient 16 régions.</figcaption>
+    </figure>
+    <div class="tablebox">
+      <table class="simpson">
+        <thead><tr><th>Points</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead>
+        <tbody>
+          <tr><td>Régions</td><td>1</td><td>2</td><td>4</td><td>8</td><td>16</td><td class="win">?</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="question">Le nombre de régions double à chaque fois. Combien en obtient-on avec 6 points ?</p>
+  </div>
+  <button class="reveal" type="button">Voir la réponse</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Réponse</p>
+    <p><span class="step">1.</span> Tout le monde répond 32. Pourtant, on n'obtient que <strong>31 régions</strong>, jamais 32, quelle que soit la place des 6 points.</p>
+    <p><span class="step">2. La vraie formule.</span> Chaque segment ajoute une région, et chaque croisement de deux segments en ajoute une aussi. Or un croisement correspond à un choix de 4 points (les extrémités des deux segments). Avec $n$ points, on trouve :</p>
+    $$\text{régions} = 1 + \underbrace{\binom{n}{2}}_{\text{segments}} + \underbrace{\binom{n}{4}}_{\text{croisements}}$$
+    <p>Pour 6 points : $1 + 15 + 15 = 31$.</p>
+    <div class="tablebox">
+      <table class="simpson">
+        <thead><tr><th>Points</th><th>5</th><th>6</th><th>7</th><th>8</th><th>10</th></tr></thead>
+        <tbody>
+          <tr><td>Régions</td><td>16</td><td class="win">31</td><td>57</td><td>99</td><td>256</td></tr>
+          <tr><td>Doubles ?</td><td>16</td><td>32</td><td>64</td><td>128</td><td>512</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><span class="step">3.</span> C'est un polynôme de degré 4 : il finit par grandir beaucoup moins vite que les puissances de 2.</p>
+    <p class="keep"><b>À retenir</b>Cinq exemples qui suivent un motif ne prouvent rien. C'est un bon exemple à montrer aux élèves qui pensent qu'« on a vérifié, donc c'est vrai ».</p>
+  </div>
+  <p class="more">Problème dit « du cercle de Moser », du nom du mathématicien Leo Moser. <a href="https://en.wikipedia.org/wiki/Dividing_a_circle_into_areas" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="29" style="--c: var(--t-fait)" hidden>
+  <span class="tag">Fait peu connu</span>
+  <h2>Le théorème de Napoléon</h2>
+  <p class="meta"><span>Géométrie du triangle</span><span class="lvl">●●●○</span></p>
+  <div class="body">
+    <p>Prends un triangle <strong>quelconque</strong>, aussi irrégulier que tu veux. Sur chacun de ses côtés, construis un triangle équilatéral vers l'extérieur.</p>
+    <p>Marque ensuite le centre de chacun de ces trois triangles équilatéraux, et relie ces trois centres.</p>
+    <figure>
+      <svg viewBox="-40 5 345 420" role="img" aria-label="Un triangle quelconque bleu, trois triangles équilatéraux construits sur ses côtés, et le triangle rouge qui relie leurs centres, qui est équilatéral">
+        <g class="f-none s-soft" stroke-width="1.5" stroke-dasharray="5 4">
+          <path d="M40 215 L270 215 L155 414.2 z"/>
+          <path d="M270 215 L110 95 L293.9 16.4 z"/>
+          <path d="M110 95 L40 215 L-28.9 94.4 z"/>
+        </g>
+        <path d="M40 215 L270 215 L110 95 z" class="f-blue-soft s-blue" stroke-width="2.5"/>
+        <path d="M155 281.4 L224.6 108.8 L40.4 134.8 z" style="fill: var(--red-soft)" class="s-red" stroke-width="3" fill-opacity="0.6"/>
+        <g class="f-red">
+          <circle cx="155" cy="281.4" r="5"/><circle cx="224.6" cy="108.8" r="5"/><circle cx="40.4" cy="134.8" r="5"/>
+        </g>
+        <g class="f-blue" font-size="15" text-anchor="middle">
+          <text x="30" y="234">A</text><text x="282" y="234">B</text><text x="106" y="84">C</text>
+        </g>
+      </svg>
+      <figcaption>En bleu : le triangle de départ. En pointillé : les triangles équilatéraux. En rouge : le triangle qui relie leurs centres.</figcaption>
+    </figure>
+    <p class="question">Que remarques-tu sur le triangle rouge ?</p>
+  </div>
+  <button class="reveal" type="button">Voir le résultat</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Le résultat</p>
+    <p><span class="step">1.</span> Le triangle rouge est <strong>toujours équilatéral</strong>, quel que soit le triangle de départ. Sur le dessin, ses trois côtés mesurent exactement la même longueur, alors que le triangle bleu n'a rien de régulier.</p>
+    <p><span class="step">2. Encore plus fort.</span> Le centre du triangle rouge est exactement le <strong>centre de gravité</strong> du triangle bleu. Et si on construit les triangles équilatéraux vers l'intérieur, on obtient encore un triangle équilatéral, plus petit.</p>
+    <p><span class="step">3. L'idée de la preuve.</span> On place la figure dans le plan avec les nombres complexes : tourner d'un tiers de tour revient à multiplier par un nombre fixe. On écrit les trois centres, et un calcul de quelques lignes montre qu'une rotation d'un tiers de tour envoie chaque centre sur le suivant. Il existe aussi des preuves avec la seule géométrie du collège, mais elles sont plus longues.</p>
+    <p><span class="step">4. Et Napoléon ?</span> Le résultat apparaît en 1825 dans un journal anglais, <em>The Ladies' Diary</em>, quatre ans après la mort de Napoléon. L'empereur aimait la géométrie et fréquentait Lagrange et Laplace, mais aucun document ne prouve qu'il ait trouvé ce théorème.</p>
+    <p class="keep"><b>À retenir</b>Avec du désordre au départ (un triangle quelconque), on obtient une régularité parfaite à l'arrivée. C'est ce genre de surprise qui fait la beauté de la géométrie du triangle.</p>
+  </div>
+  <p class="more">Publié par W. Rutherford dans <em>The Ladies' Diary</em> (1825). <a href="https://fr.wikipedia.org/wiki/Th%C3%A9or%C3%A8me_de_Napol%C3%A9on" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+
+<article class="card" data-n="30" style="--c: var(--t-paradoxe)" hidden>
+  <span class="tag">Paradoxe</span>
+  <h2>Achille ne rattrape jamais la tortue ?</h2>
+  <p class="meta"><span>Suites · infini</span><span class="lvl">●●○○</span></p>
+  <div class="body">
+    <p>Il y a 2 500 ans, le philosophe grec Zénon d'Élée propose ce raisonnement.</p>
+    <p>Achille court <strong>10 fois plus vite</strong> qu'une tortue. Beau joueur, il lui laisse <strong>100 m d'avance</strong>.</p>
+    <figure>
+      <div class="chain">
+        <div><b>Achille court 100 m</b><span>la tortue a fait 10 m</span></div>
+        <div><b>Achille court 10 m</b><span>la tortue a fait 1 m</span></div>
+        <div><b>Achille court 1 m</b><span>la tortue a fait 0,1 m</span></div>
+        <div><b>Achille court 0,1 m</b><span>la tortue a fait 0,01 m</span></div>
+        <div class="end"><b>… et ainsi de suite</b><span>sans fin ?</span></div>
+      </div>
+      <figcaption>Chaque fois qu'Achille arrive là où était la tortue, elle a un peu avancé.</figcaption>
+    </figure>
+    <p>Il y a une infinité d'étapes. Donc, conclut Zénon, Achille ne rattrape <strong>jamais</strong> la tortue.</p>
+    <p class="question">Où est l'erreur ? Et où Achille rattrape-t-il vraiment la tortue ?</p>
+  </div>
+  <button class="reveal" type="button">Voir l'explication</button>
+  <div class="solution" hidden>
+    <p class="solution-label">Explication</p>
+    <p><span class="step">1. L'erreur.</span> Zénon croit qu'une infinité d'étapes prend forcément un temps infini. Mais les étapes sont de plus en plus courtes : leur somme peut être un nombre fini.</p>
+    <p><span class="step">2. La somme.</span> Achille parcourt :</p>
+    $$100 + 10 + 1 + 0{,}1 + 0{,}01 + \cdots = 111{,}111\ldots \text{ m}$$
+    <figure>
+      <svg viewBox="0 0 320 80" role="img" aria-label="Un segment de 100 mètres, puis 10 mètres, puis 1 mètre, qui s'arrête à 111,1 mètres">
+        <line x1="20" y1="40" x2="250" y2="40" class="s-blue" stroke-width="8"/>
+        <line x1="250" y1="40" x2="273" y2="40" class="s-red" stroke-width="8"/>
+        <line x1="273" y1="40" x2="275.3" y2="40" class="s-blue" stroke-width="8"/>
+        <line x1="275.6" y1="28" x2="275.6" y2="52" class="s-ink" stroke-width="1.5"/>
+        <g class="f-ink" font-size="12" text-anchor="middle">
+          <text x="135" y="25">100 m</text>
+          <text x="261" y="25">10 m</text>
+          <text x="20" y="68">0</text>
+          <text x="280" y="68">111,1 m</text>
+        </g>
+      </svg>
+      <figcaption>Les morceaux 1 m, 0,1 m… sont si petits qu'on ne les voit plus. Tout s'arrête avant 111,2 m.</figcaption>
+    </figure>
+    <p>C'est le nombre $111{,}111\ldots = \dfrac{1000}{9}$ m. Achille rattrape donc la tortue au bout d'environ <strong>111,1 m</strong>.</p>
+    <p><span class="step">3. Vérification sans l'infini.</span> Quand Achille a couru $d$ mètres, la tortue en a fait $\dfrac{d}{10}$. Ils sont au même endroit quand :</p>
+    $$d = 100 + \frac{d}{10} \quad\Longrightarrow\quad \frac{9d}{10} = 100 \quad\Longrightarrow\quad d = \frac{1000}{9}$$
+    <p class="keep"><b>À retenir</b>Une somme d'une infinité de nombres peut donner un résultat fini. C'est le cas de 0,999… = 1. Il a fallu attendre le XIXe siècle pour donner un sens précis à ces sommes infinies.</p>
+  </div>
+  <p class="more">Zénon d'Élée (Ve siècle av. J.-C.), rapporté par Aristote dans la <em>Physique</em>. <a href="https://fr.wikipedia.org/wiki/Paradoxes_de_Z%C3%A9non" target="_blank" rel="noopener">Pour aller plus loin</a></p>
+</article>
+</main>
+
+  <div class="nav">
+    <button type="button" id="prev">‹ Veille</button>
+    <button type="button" id="next">Lendemain ›</button>
+  </div>
+
+  <section class="archive" aria-labelledby="archive-title">
+    <h2 id="archive-title">Toutes les fiches <span id="archive-count"></span></h2>
+    <ol id="archive-list"></ol>
+  </section>
+
+  <footer>Fait avec amour pour Papounet · une nouvelle fiche chaque jour</footer>
+</div>
+
+<script>
+(function () {
+  // ===== Réglages =====
+  // Date de la fiche n°1. Chaque jour suivant affiche la fiche suivante.
+  var START = '2026-11-24';
+  // true = toutes les fiches visibles (aperçu). false = une nouvelle fiche par jour.
+  var PREVIEW = window.PAPOUNET_PREVIEW === true || location.hash === '#apercu';
+
+  var DAY_MS = 86400000;
+  var WD = ['dim', 'lun', 'mar', 'mer', 'jeu', 'ven', 'sam'];
+
+  function parseDate(s) { var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function addDays(d, n) { return new Date(d.getFullYear(), d.getMonth(), d.getDate() + n); }
+  function longDate(d) {
+    try { return d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }); }
+    catch (e) { return d.getDate() + '/' + (d.getMonth() + 1); }
+  }
+
+  // ===== Échiquier (fiche des dominos) =====
+  var board = document.getElementById('board');
+  if (board) {
+    var NS = 'http://www.w3.org/2000/svg';
+    var S = 28, O = 12;
+    var el = function (name, attrs, style) {
+      var e = document.createElementNS(NS, name);
+      for (var k in attrs) e.setAttribute(k, attrs[k]);
+      if (style) e.setAttribute('style', style);
+      board.appendChild(e);
+      return e;
+    };
+    for (var r = 0; r < 8; r++) {
+      for (var c = 0; c < 8; c++) {
+        var removed = (r === 0 && c === 0) || (r === 7 && c === 7);
+        var dark = (r + c) % 2 === 0;
+        var x = O + c * S, y = O + r * S;
+        el('rect', { x: x, y: y, width: S, height: S }, removed ? 'fill: var(--sheet); stroke: var(--line)' : ('fill: ' + (dark ? 'var(--sq-dark)' : 'var(--sq-light)')));
+        if (removed) {
+          el('line', { x1: x + 6, y1: y + 6, x2: x + S - 6, y2: y + S - 6, 'stroke-width': 3, 'stroke-linecap': 'round' }, 'stroke: var(--red)');
+          el('line', { x1: x + S - 6, y1: y + 6, x2: x + 6, y2: y + S - 6, 'stroke-width': 3, 'stroke-linecap': 'round' }, 'stroke: var(--red)');
+        }
+      }
+    }
+    el('rect', { x: O, y: O, width: 8 * S, height: 8 * S, fill: 'none', 'stroke-width': 1.5 }, 'stroke: var(--ink-soft)');
+    el('rect', { x: O + 3 * S + 3, y: O + 2 * S + 3, width: 2 * S - 6, height: S - 6, rx: 6, fill: 'none', 'stroke-width': 3.5 }, 'stroke: var(--red)');
+  }
+
+  // ===== Taille du texte =====
+  var root = document.documentElement;
+  var sizes = [15, 17, 19, 21, 23];
+  var si = 1;
+  try { var saved = parseInt(localStorage.getItem('papounet-size'), 10); if (saved >= 0 && saved < sizes.length) si = saved; } catch (e) {}
+  var smaller = document.getElementById('smaller');
+  var bigger = document.getElementById('bigger');
+  function applySize() {
+    root.style.fontSize = sizes[si] + 'px';
+    smaller.disabled = si === 0;
+    bigger.disabled = si === sizes.length - 1;
+    try { localStorage.setItem('papounet-size', String(si)); } catch (e) {}
+  }
+  smaller.addEventListener('click', function () { if (si > 0) { si--; applySize(); } });
+  bigger.addEventListener('click', function () { if (si < sizes.length - 1) { si++; applySize(); } });
+  applySize();
+
+  // ===== Fiches =====
+  var all = Array.prototype.slice.call(document.querySelectorAll('#cards .card'));
+  all.sort(function (a, b) { return +a.dataset.n - +b.dataset.n; });
+  var N = all.length;
+  var start = parseDate(START);
+  var now = new Date();
+  var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  var dayIndex = Math.round((today - start) / DAY_MS) + 1; // 1 = jour de la fiche n°1
+
+  var todayN, availableCount;
+  if (PREVIEW) { availableCount = N; todayN = Math.min(Math.max(dayIndex, 1), N); }
+  else if (dayIndex < 1) { availableCount = 1; todayN = 1; }
+  else if (dayIndex <= N) { availableCount = dayIndex; todayN = dayIndex; }
+  else { availableCount = N; todayN = ((dayIndex - 1) % N) + 1; }
+
+  var cards = all.slice(0, availableCount);
+  all.slice(availableCount).forEach(function (c) { c.remove(); });
+
+  cards.forEach(function (card) {
+    var n = +card.dataset.n;
+    var d = addDays(start, n - 1);
+    card.dataset.date = WD[d.getDay()] + '|' + d.getDate();
+    var when = document.createElement('p');
+    when.className = 'when';
+    when.innerHTML = (n === todayN ? '<span class="today">Aujourd\'hui</span> · ' : '') + longDate(n === todayN ? today : d) + ' · fiche n°' + n;
+    card.insertBefore(when, card.firstChild);
+
+    var btn = card.querySelector('.reveal');
+    var sol = card.querySelector('.solution');
+    if (btn && sol) {
+      btn.dataset.label = btn.textContent;
+      btn.addEventListener('click', function () {
+        var open = sol.hidden;
+        sol.hidden = !open;
+        btn.textContent = open ? 'Masquer' : btn.dataset.label;
+        if (open) typeset(sol);
+      });
+    }
+  });
+
+  function typeset(node) {
+    if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([node]).catch(function () {});
+  }
+
+  var days = document.getElementById('days');
+  var prev = document.getElementById('prev');
+  var next = document.getElementById('next');
+  var archive = document.getElementById('archive-list');
+  var current = cards.length - 1;
+  for (var i = 0; i < cards.length; i++) if (+cards[i].dataset.n === todayN) current = i;
+
+  // Liste de toutes les fiches déjà parues (la plus récente en haut)
+  cards.slice().reverse().forEach(function (card) {
+    var i = cards.indexOf(card);
+    var li = document.createElement('li');
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.style.setProperty('--c', card.style.getPropertyValue('--c'));
+    var tag = card.querySelector('.tag').textContent;
+    var title = card.querySelector('h2').textContent;
+    var dd = card.dataset.date.split('|');
+    b.innerHTML = '<span class="a-n">n°' + card.dataset.n + '</span><span class="a-t"><small>' + tag + '</small>' + title + '</span>';
+    b.addEventListener('click', function () { show(i); window.scrollTo(0, 0); });
+    li.appendChild(b);
+    archive.appendChild(li);
+  });
+  document.getElementById('archive-count').textContent = cards.length + (cards.length > 1 ? ' fiches' : ' fiche');
+
+  function renderDays() {
+    days.innerHTML = '';
+    var lo = Math.max(0, Math.min(current - 2, cards.length - 5));
+    var hi = Math.min(cards.length, lo + 5);
+    for (var j = lo; j < hi; j++) (function (j) {
+      var card = cards[j];
+      var dd = card.dataset.date.split('|');
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'day';
+      b.innerHTML = '<small>' + dd[0] + '</small><b>' + dd[1] + '</b><span class="dot" style="background:' + card.style.getPropertyValue('--c') + '"></span>';
+      b.setAttribute('aria-label', 'Fiche n°' + card.dataset.n + ' : ' + card.querySelector('h2').textContent);
+      b.setAttribute('aria-current', j === current ? 'true' : 'false');
+      b.addEventListener('click', function () { show(j); });
+      days.appendChild(b);
+    })(j);
+    days.style.gridTemplateColumns = 'repeat(' + (hi - lo) + ', 1fr)';
+  }
+
+  function show(i) {
+    current = i;
+    cards.forEach(function (c, j) { c.hidden = j !== i; });
+    prev.disabled = i === 0;
+    next.disabled = i === cards.length - 1;
+    renderDays();
+    typeset(cards[i]);
+  }
+
+  prev.addEventListener('click', function () { if (current > 0) { show(current - 1); window.scrollTo(0, 0); } });
+  next.addEventListener('click', function () { if (current < cards.length - 1) { show(current + 1); window.scrollTo(0, 0); } });
+  if (PREVIEW) document.getElementById('preview-note').hidden = false;
+  show(current);
+})();
+
+</script>
+
+</body>
+</html>
