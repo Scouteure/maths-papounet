@@ -60,6 +60,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { font-size: 17px; }
 body {
   background-color: var(--paper);
@@ -228,7 +229,7 @@ mjx-container[display="true"] > svg { max-width: 100%; height: auto; }
 }
 
 .preview-note { font-family: var(--font-ui); font-size: 0.82rem; background: var(--blue-soft); color: var(--blue); border-radius: 12px; padding: 10px 14px; margin: 0; }
-.archive { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+.archive { display: flex; flex-direction: column; gap: 10px; }
 .archive h2 { font-family: var(--font-ui); font-weight: 800; font-size: 1.1rem; margin: 0; }
 .archive h2 span { color: var(--ink-soft); font-weight: 600; font-size: 0.85rem; margin-left: 6px; }
 .archive ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
@@ -241,6 +242,19 @@ mjx-container[display="true"] > svg { max-width: 100%; height: auto; }
 .archive .a-n { color: var(--ink-soft); font-variant-numeric: tabular-nums; font-size: 0.8rem; min-width: 2.6em; }
 .archive .a-t { display: flex; flex-direction: column; min-width: 0; }
 .archive .a-t small { color: var(--c); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; }
+
+.tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; background: var(--line); padding: 4px; border-radius: 14px; }
+.tabs button {
+  font-family: var(--font-ui); font-weight: 800; font-size: 0.95rem; line-height: 1.2;
+  border: 0; border-radius: 11px; padding: 12px 6px; cursor: pointer;
+  background: transparent; color: var(--ink-soft);
+}
+.tabs button[aria-selected="true"] { background: var(--sheet); color: var(--blue); box-shadow: 0 1px 4px rgba(20, 30, 70, 0.12); }
+.tabs button span { display: block; font-weight: 600; font-size: 0.75rem; }
+.view-day { display: flex; flex-direction: column; gap: 18px; }
+.view-day[hidden] { display: none; }
+.archive-help { font-family: var(--font-ui); font-size: 0.85rem; color: var(--ink-soft); margin: 0; }
+.archive .a-today { font-family: var(--font-ui); font-size: 0.7rem; font-weight: 800; color: var(--red); text-transform: uppercase; letter-spacing: 0.06em; }
 </style>
 
 </head>
@@ -259,6 +273,17 @@ mjx-container[display="true"] > svg { max-width: 100%; height: auto; }
 
   <p class="preview-note" id="preview-note" hidden>Aperçu : toutes les fiches du mois sont visibles. Sur le site de Papounet, une nouvelle fiche apparaît chaque jour.</p>
 
+  <div class="tabs" role="tablist" aria-label="Affichage">
+    <button type="button" role="tab" id="tab-day" aria-selected="true">Problème du jour</button>
+    <button type="button" role="tab" id="tab-list" aria-selected="false">Tous les problèmes <span id="archive-count"></span></button>
+  </div>
+
+  <section class="archive" id="view-list" aria-label="Tous les problèmes" hidden>
+    <p class="archive-help">Touchez un problème pour l'ouvrir.</p>
+    <ol id="archive-list"></ol>
+  </section>
+
+  <div class="view-day" id="view-day">
   <nav class="days" id="days" aria-label="Choisir le jour"></nav>
 
   <main id="cards">
@@ -1772,11 +1797,8 @@ mjx-container[display="true"] > svg { max-width: 100%; height: auto; }
     <button type="button" id="prev">‹ Veille</button>
     <button type="button" id="next">Lendemain ›</button>
   </div>
+  </div>
 
-  <section class="archive" aria-labelledby="archive-title">
-    <h2 id="archive-title">Toutes les fiches <span id="archive-count"></span></h2>
-    <ol id="archive-list"></ol>
-  </section>
 
   <footer>Fait avec amour pour Papounet · une nouvelle fiche chaque jour</footer>
 </div>
@@ -1905,12 +1927,33 @@ mjx-container[display="true"] > svg { max-width: 100%; height: auto; }
     var tag = card.querySelector('.tag').textContent;
     var title = card.querySelector('h2').textContent;
     var dd = card.dataset.date.split('|');
-    b.innerHTML = '<span class="a-n">n°' + card.dataset.n + '</span><span class="a-t"><small>' + tag + '</small>' + title + '</span>';
-    b.addEventListener('click', function () { show(i); window.scrollTo(0, 0); });
+    var isToday = +card.dataset.n === todayN;
+    b.innerHTML = '<span class="a-n">n°' + card.dataset.n + '</span><span class="a-t">' + (isToday ? '<span class="a-today">Aujourd\'hui</span>' : '') + '<small>' + tag + '</small>' + title + '</span>';
+    b.addEventListener('click', function () { show(i); setView('day'); window.scrollTo(0, 0); });
     li.appendChild(b);
     archive.appendChild(li);
   });
   document.getElementById('archive-count').textContent = cards.length + (cards.length > 1 ? ' fiches' : ' fiche');
+
+  // Deux affichages : le problème du jour (par défaut) ou la liste de tous les problèmes
+  var tabDay = document.getElementById('tab-day');
+  var tabList = document.getElementById('tab-list');
+  var viewDay = document.getElementById('view-day');
+  var viewList = document.getElementById('view-list');
+  function setView(v) {
+    var list = v === 'list';
+    viewList.hidden = !list;
+    viewDay.hidden = list;
+    tabList.setAttribute('aria-selected', list ? 'true' : 'false');
+    tabDay.setAttribute('aria-selected', list ? 'false' : 'true');
+  }
+  tabDay.addEventListener('click', function () {
+    var t = 0;
+    for (var k = 0; k < cards.length; k++) if (+cards[k].dataset.n === todayN) t = k;
+    show(t);
+    setView('day');
+  });
+  tabList.addEventListener('click', function () { setView('list'); });
 
   function renderDays() {
     days.innerHTML = '';
